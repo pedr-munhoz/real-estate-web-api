@@ -23,8 +23,5 @@ public class OwnerViewModel : Owner, ViewModel<Owner>
     [Required]
     public override string Mobile { get; set; } = "";
 
-    public Owner Map()
-    {
-        return this;
-    }
+    public Owner Map() => this;
 }
