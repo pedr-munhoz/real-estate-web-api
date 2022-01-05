@@ -4,5 +4,5 @@ public abstract class EntityModel
 {
     public EntityModel() { }
 
-    public string Id { get; set; } = "";
+    public virtual string Id { get; set; } = "";
 }
