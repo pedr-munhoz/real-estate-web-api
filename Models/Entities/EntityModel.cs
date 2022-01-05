@@ -1,4 +1,4 @@
-namespace real_state_web_api.Models.EntityModels;
+namespace real_state_web_api.Models.Entities;
 
 public abstract class EntityModel
 {
