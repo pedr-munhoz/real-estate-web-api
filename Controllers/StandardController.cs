@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using real_state_web_api.Models;
+using real_state_web_api.Models.EntityModels;
 
 namespace real_state_web_api.Controllers;
 
@@ -24,11 +24,11 @@ public abstract class StandardController<T> : ControllerBase
     public async Task<ActionResult> Retrieve()
     {
         await Task.CompletedTask;
-        return Ok(new List<T>());
+        return Ok(new List<T> { new T(), new T(), new T() });
     }
 
     [HttpGet]
-    [Route("{id:string}")]
+    [Route("{id}")]
     public async Task<ActionResult> RetrieveById([FromRoute] string id)
     {
         await Task.CompletedTask;
@@ -47,10 +47,10 @@ public abstract class StandardController<T> : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:string}")]
+    [Route("{id}")]
     public async Task<ActionResult> Delete([FromRoute] string id)
     {
         await Task.CompletedTask;
-        return Ok(new T { Id = id });
+        return NoContent();
     }
 }
