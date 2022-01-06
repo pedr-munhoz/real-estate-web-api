@@ -1,9 +1,11 @@
+using real_estate_web_api.Models.Enumerations;
+
 namespace real_estate_web_api.Models.Entities;
 
 public class RealEstate : EntityModel
 {
     public virtual string Address { get; set; } = "";
-    // TODO: property type
+    public virtual BuildingType Type { get; set; }
     public virtual int GrossBuildingArea { get; set; }
     public virtual int Bedrooms { get; set; }
     public virtual int ParkingSpaces { get; set; }
