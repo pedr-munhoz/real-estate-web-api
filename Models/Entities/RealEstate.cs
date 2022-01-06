@@ -1,6 +1,6 @@
 namespace real_estate_web_api.Models.Entities;
 
-public class RealState : EntityModel
+public class RealEstate : EntityModel
 {
     public virtual string Address { get; set; } = "";
     // TODO: property type
