@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using real_estate_web_api.Models.Entities;
 
 namespace real_estate_web_api.Models.ViewModels;
@@ -27,5 +27,18 @@ public class OwnerViewModel : Owner, ViewModel<Owner>
     [JsonIgnore]
     public override DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    public Owner Map() => this;
+    [JsonIgnore]
+    public override DateTime? InactivatedAt { get; set; }
+
+    public Owner Map()
+    {
+        return new Owner
+        {
+            TaxDocument = TaxDocument,
+            Address = Address,
+            BirthDate = BirthDate,
+            FirstName = LastName,
+            Mobile = Mobile,
+        };
+    }
 }

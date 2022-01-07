@@ -8,5 +8,4 @@ public class Owner : EntityModel
     public virtual string FirstName { get; set; } = "";
     public virtual string LastName { get; set; } = "";
     public virtual string Mobile { get; set; } = "";
-    public virtual DateTime CreatedAt { get; set; } = DateTime.Now;
 }

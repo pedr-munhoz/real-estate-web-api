@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using real_estate_web_api.Models.Entities;
 using real_estate_web_api.Models.Enumerations;
 
@@ -30,5 +31,25 @@ public class RealEstateViewModel : RealEstate, ViewModel<RealEstate>
     [Range(0, Double.PositiveInfinity)]
     public override double? RentAmount { get; set; }
 
-    public RealEstate Map() => this;
+    [JsonIgnore]
+    public override DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    [JsonIgnore]
+    public override DateTime? InactivatedAt { get; set; }
+
+    public RealEstate Map()
+    {
+        return new RealEstate
+        {
+            Address = Address,
+            Type = Type,
+            GrossBuildingArea = GrossBuildingArea,
+            Bedrooms = Bedrooms,
+            ParkingSpaces = ParkingSpaces,
+            SaleAvailable = SaleAvailable,
+            SaleAmount = SaleAmount,
+            RentAvailable = RentAvailable,
+            RentAmount = RentAmount,
+        };
+    }
 }
