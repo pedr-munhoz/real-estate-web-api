@@ -13,7 +13,7 @@ public class OwnerViewModel : Owner, ViewModel<Owner>
     public override string Address { get; set; } = "";
 
     [Required]
-    public override int Age { get; set; }
+    public override DateTime BirthDate { get; set; }
 
     [Required]
     public override string FirstName { get; set; } = "";
