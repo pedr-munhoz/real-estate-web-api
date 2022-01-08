@@ -6,9 +6,9 @@ namespace real_estate_web_api.Controllers;
 
 [ApiController]
 [Route("api/v2/[controller]")]
-public abstract class StandardController<TEntity, TModel> : ControllerBase
-    where TEntity : EntityModel, new()
-    where TModel : ViewModel<TEntity>
+public abstract class StandardController<IEntity, TModel> : ControllerBase
+    where IEntity : IEntityModel
+    where TModel : ViewModel<IEntity>, new()
 {
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -30,7 +30,7 @@ public abstract class StandardController<TEntity, TModel> : ControllerBase
     public async Task<ActionResult> Retrieve()
     {
         await Task.CompletedTask;
-        return Ok(new List<TEntity> { new TEntity(), new TEntity(), new TEntity() });
+        return Ok(new List<IEntity> { new TModel().Map(), new TModel().Map(), new TModel().Map() });
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,7 +40,7 @@ public abstract class StandardController<TEntity, TModel> : ControllerBase
     public async Task<ActionResult> RetrieveById([FromRoute] string id)
     {
         await Task.CompletedTask;
-        return Ok(new TEntity { Id = id });
+        return Ok(new TModel { Id = id }.Map());
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]

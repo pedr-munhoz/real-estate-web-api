@@ -1,43 +1,41 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities;
+using real_estate_web_api.Models.Entities.RealEstates;
 using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RealEstateViewModel : RealEstate, ViewModel<RealEstate>
+public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
 {
     [Required]
-    public override string Address { get; set; } = "";
+    public string Address { get; set; } = "";
 
     [Required]
-    public override BuildingType Type { get; set; }
+    public BuildingType Type { get; set; }
 
     [Required]
     [Range(1, 9999)]
-    public override int GrossBuildingArea { get; set; }
+    public int GrossBuildingArea { get; set; }
 
     [Required]
     [Range(1, 999)]
-    public override int Bedrooms { get; set; }
+    public int Bedrooms { get; set; }
 
     [Required]
     [Range(1, 999)]
-    public override int ParkingSpaces { get; set; }
+    public int ParkingSpaces { get; set; }
 
     [Range(0, Double.PositiveInfinity)]
-    public override double? SaleAmount { get; set; }
+    public double? SaleAmount { get; set; }
 
     [Range(0, Double.PositiveInfinity)]
-    public override double? RentAmount { get; set; }
+    public double? RentAmount { get; set; }
 
-    [JsonIgnore]
-    public override DateTime CreatedAt { get; set; } = DateTime.Now;
+    public bool SaleAvailable { get; set; }
 
-    [JsonIgnore]
-    public override DateTime? InactivatedAt { get; set; }
+    public bool RentAvailable { get; set; }
 
-    public RealEstate Map()
+    public override RealEstate Map()
     {
         return new RealEstate
         {

@@ -1,45 +1,44 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities;
+using real_estate_web_api.Models.Entities.RealEstates;
+using real_estate_web_api.Models.Entities.Realtors;
+using real_estate_web_api.Models.Entities.Rentals;
+using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RentalViewModel : Rental, ViewModel<Rental>
+public class RentalViewModel : ViewModel<IRental>, IRental
 {
     [Required]
     public string RealEstateId { get; set; } = "";
 
     [JsonIgnore]
-    public override RealEstate RealEstate { get; set; } = new RealEstate();
+    public IRealEstate RealEstate { get; set; } = new RealEstate();
 
     [Required]
     public string RealtorId { get; set; } = "";
 
     [JsonIgnore]
-    public override Realtor Realtor { get; set; } = new Realtor();
+    public IRealtor Realtor { get; set; } = new Realtor();
 
     [Required]
     public string TenantId { get; set; } = "";
 
     [JsonIgnore]
-    public override Tenant Tenant { get; set; } = new Tenant();
+    public ITenant Tenant { get; set; } = new Tenant();
 
     [Required]
-    public override DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; }
 
     [Required]
     public int Duration { get; set; }
 
     [JsonIgnore]
-    public override DateTime EndDate { get; set; }
+    public DateTime EndDate { get; set; }
 
-    [JsonIgnore]
-    public override DateTime CreatedAt { get; set; } = DateTime.Now;
+    public double MonthlyAmount { get; set; }
 
-    [JsonIgnore]
-    public override DateTime? InactivatedAt { get; set; }
-
-    public Rental Map()
+    public override Rental Map()
     {
         return new Rental
         {
