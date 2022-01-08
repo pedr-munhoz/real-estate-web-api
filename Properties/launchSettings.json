@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "real_state_web_api": {
+    "real_estate_web_api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

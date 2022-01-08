@@ -3,7 +3,7 @@ using real_estate_web_api.Models.ViewModels;
 
 namespace real_estate_web_api.Controllers;
 
-public class OwnerController : StandardController<Owner, OwnerViewModel>
+public class RealEstateController : StandardController<RealEstate, RealEstateViewModel>
 {
 
 }
