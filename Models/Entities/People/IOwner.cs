@@ -1,6 +1,6 @@
-namespace real_estate_web_api.Models.Entities.Realtors;
+namespace real_estate_web_api.Models.Entities.People;
 
-public interface IRealtor : IEntityModel
+public interface IOwner : IEntityModel
 {
     string TaxDocument { get; set; }
     string Address { get; set; }

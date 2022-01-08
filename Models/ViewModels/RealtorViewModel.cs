@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities.Realtors;
+using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.ViewModels;
 
@@ -22,10 +22,11 @@ public class RealtorViewModel : ViewModel<IRealtor>, IRealtor
 
     public DateTime BirthDate { get; set; }
 
-    public override Realtor Map()
+    public override IRealtor Map()
     {
-        return new Realtor
+        return new Person
         {
+            IsRealtor = true,
             Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,
