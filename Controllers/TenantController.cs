@@ -1,9 +1,9 @@
-using real_estate_web_api.Models.Entities;
+using real_estate_web_api.Models.Entities.Tenants;
 using real_estate_web_api.Models.ViewModels;
 
 namespace real_estate_web_api.Controllers;
 
-public class TenantController : StandardController<Tenant, TenantViewModel>
+public class TenantController : StandardController<ITenant, TenantViewModel>
 {
 
 }

@@ -1,28 +1,37 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities;
+using real_estate_web_api.Models.Entities.Realtors;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RealtorViewModel : Realtor, ViewModel<Realtor>
+public class RealtorViewModel : ViewModel<IRealtor>, IRealtor
 {
     [Required]
-    public override string TaxDocument { get; set; } = "";
+    public string TaxDocument { get; set; } = "";
 
     [Required]
-    public override string FirstName { get; set; } = "";
+    public string FirstName { get; set; } = "";
 
     [Required]
-    public override string LastName { get; set; } = "";
+    public string LastName { get; set; } = "";
 
     [Required]
-    public override string Mobile { get; set; } = "";
+    public string Mobile { get; set; } = "";
 
-    [JsonIgnore]
-    public override DateTime CreatedAt { get; set; } = DateTime.Now;
+    public string Address { get; set; } = "";
 
-    [JsonIgnore]
-    public override DateTime? InactivatedAt { get; set; }
+    public DateTime BirthDate { get; set; }
 
-    public Realtor Map() => this;
+    public override Realtor Map()
+    {
+        return new Realtor
+        {
+            TaxDocument = TaxDocument,
+            Address = Address,
+            BirthDate = BirthDate,
+            FirstName = FirstName,
+            LastName = LastName,
+            Mobile = Mobile,
+        };
+    }
 }
