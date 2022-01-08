@@ -5,23 +5,27 @@ namespace real_estate_web_api.Services;
 public class ListRepository<T> : IRepository<T>
     where T : IEntityModel
 {
-    private List<T> _data = new List<T>();
+    private static List<T> _data = new List<T>();
 
-    public ServiceResult<T> Create(T entity)
+    public async Task<ServiceResult<T>> Create(T entity)
     {
+        await Task.CompletedTask;
+
         entity.Id = Guid.NewGuid().ToString();
         _data.Add(entity);
 
         return new ServiceResult<T>(entity);
     }
 
-    public ServiceResult Delete(string id)
+    public async Task<ServiceResult> Delete(string id)
     {
+        await Task.CompletedTask;
+
         var entity = _data.Where(x => x.Id == id).FirstOrDefault();
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}");
+            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
             return new ServiceResult(false, error);
         }
 
@@ -30,31 +34,37 @@ public class ListRepository<T> : IRepository<T>
         return new ServiceResult(true);
     }
 
-    public ServiceResult<List<T>> Retrieve()
+    public async Task<ServiceResult<List<T>>> Retrieve()
     {
+        await Task.CompletedTask;
+
         return new ServiceResult<List<T>>(_data);
     }
 
-    public ServiceResult<T> Retrieve(string id)
+    public async Task<ServiceResult<T>> Retrieve(string id)
     {
+        await Task.CompletedTask;
+
         var entity = _data.Where(x => x.Id == id).FirstOrDefault();
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}");
+            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
             return new ServiceResult<T>(error);
         }
 
         return new ServiceResult<T>(entity);
     }
 
-    public ServiceResult<T> Update(T newEntity)
+    public async Task<ServiceResult<T>> Update(T newEntity)
     {
+        await Task.CompletedTask;
+
         var entity = _data.Where(x => x.Id == newEntity.Id).FirstOrDefault();
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {newEntity.Id}");
+            var error = new ServiceError("not found", $"entity not found for id: {newEntity.Id}", 404);
             return new ServiceResult<T>(error);
         }
 
