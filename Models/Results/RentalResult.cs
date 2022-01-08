@@ -8,6 +8,10 @@ namespace real_estate_web_api.Models.Results;
 
 public class RentalResult : Result<IRental>, IRental
 {
+    public RentalResult()
+    {
+    }
+
     public RentalResult(IRental entity) : base(entity)
     {
         StartDate = entity.StartDate;
@@ -33,4 +37,7 @@ public class RentalResult : Result<IRental>, IRental
     [JsonIgnore]
     public ITenant Tenant { get; set; } = new Tenant();
     public string? TenantId { get; set; }
+
+    public override Result<IRental> Instantiate(IRental entity)
+        => new RentalResult(entity);
 }

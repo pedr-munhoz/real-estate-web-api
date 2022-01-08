@@ -28,6 +28,7 @@ public class OwnerViewModel : ViewModel<IOwner>, IOwner
     {
         return new Owner
         {
+            Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,
             BirthDate = BirthDate,

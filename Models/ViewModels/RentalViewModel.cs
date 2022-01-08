@@ -42,6 +42,7 @@ public class RentalViewModel : ViewModel<IRental>, IRental
     {
         return new Rental
         {
+            Id = Id,
             StartDate = StartDate,
             EndDate = StartDate.AddMonths(Duration),
             MonthlyAmount = MonthlyAmount,

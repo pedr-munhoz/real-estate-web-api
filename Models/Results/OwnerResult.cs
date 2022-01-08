@@ -4,6 +4,10 @@ namespace real_estate_web_api.Models.Results;
 
 public class OwnerResult : Result<IOwner>, IOwner
 {
+    public OwnerResult()
+    {
+    }
+
     public OwnerResult(IOwner entity) : base(entity)
     {
         TaxDocument = entity.TaxDocument;
@@ -14,10 +18,13 @@ public class OwnerResult : Result<IOwner>, IOwner
         Mobile = entity.Mobile;
     }
 
-    public string TaxDocument { get; set; }
-    public string Address { get; set; }
+    public string TaxDocument { get; set; } = "";
+    public string Address { get; set; } = "";
     public DateTime BirthDate { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Mobile { get; set; }
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public string Mobile { get; set; } = "";
+
+    public override Result<IOwner> Instantiate(IOwner entity)
+        => new OwnerResult(entity);
 }

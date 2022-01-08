@@ -7,6 +7,10 @@ namespace real_estate_web_api.Models.Results;
 
 public class RentalDeepResult : Result<IRental>, IRental
 {
+    public RentalDeepResult()
+    {
+    }
+
     public RentalDeepResult(IRental entity) : base(entity)
     {
         StartDate = entity.StartDate;
@@ -20,7 +24,10 @@ public class RentalDeepResult : Result<IRental>, IRental
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public double MonthlyAmount { get; set; }
-    public IRealEstate RealEstate { get; set; }
-    public IRealtor Realtor { get; set; }
-    public ITenant Tenant { get; set; }
+    public IRealEstate RealEstate { get; set; } = new RealEstate();
+    public IRealtor Realtor { get; set; } = new Realtor();
+    public ITenant Tenant { get; set; } = new Tenant();
+
+    public override Result<IRental> Instantiate(IRental entity)
+        => new RentalDeepResult(entity);
 }

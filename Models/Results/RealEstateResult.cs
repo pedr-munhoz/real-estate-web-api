@@ -5,6 +5,10 @@ namespace real_estate_web_api.Models.Results
 {
     public class RealEstateResult : Result<IRealEstate>, IRealEstate
     {
+        public RealEstateResult()
+        {
+        }
+
         public RealEstateResult(IRealEstate entity) : base(entity)
         {
             Address = entity.Address;
@@ -18,7 +22,7 @@ namespace real_estate_web_api.Models.Results
             RentAmount = entity.RentAmount;
         }
 
-        public string Address { get; set; }
+        public string Address { get; set; } = "";
         public BuildingType Type { get; set; }
         public int GrossBuildingArea { get; set; }
         public int Bedrooms { get; set; }
@@ -27,5 +31,8 @@ namespace real_estate_web_api.Models.Results
         public double? SaleAmount { get; set; }
         public bool RentAvailable { get; set; }
         public double? RentAmount { get; set; }
+
+        public override Result<IRealEstate> Instantiate(IRealEstate entity)
+            => new RealEstateResult(entity);
     }
 }

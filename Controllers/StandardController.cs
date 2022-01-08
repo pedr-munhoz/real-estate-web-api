@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using real_estate_web_api.Models.Entities;
+using real_estate_web_api.Models.Results;
 using real_estate_web_api.Models.ViewModels;
 
 namespace real_estate_web_api.Controllers;
 
 [ApiController]
 [Route("api/v2/[controller]")]
-public abstract class StandardController<IEntity, TModel> : ControllerBase
-    where IEntity : IEntityModel
-    where TModel : ViewModel<IEntity>, new()
+public abstract class StandardController<TEntity, TModel, TResult> : ControllerBase
+    where TEntity : IEntityModel
+    where TModel : ViewModel<TEntity>, new()
+    where TResult : Result<TEntity>, new()
 {
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -21,7 +23,7 @@ public abstract class StandardController<IEntity, TModel> : ControllerBase
 
         await Task.CompletedTask;
 
-        return Created($"/{result.Id}", result);
+        return Created($"/{result.Id}", new TResult().Instantiate(result));
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -30,7 +32,12 @@ public abstract class StandardController<IEntity, TModel> : ControllerBase
     public async Task<ActionResult> Retrieve()
     {
         await Task.CompletedTask;
-        return Ok(new List<IEntity> { new TModel().Map(), new TModel().Map(), new TModel().Map() });
+        var results = new List<Result<TEntity>>();
+
+        for (int i = 0; i < 3; i++)
+            results.Add(new TResult().Instantiate(new TModel().Map()));
+
+        return Ok(new ListResult<TEntity>(results));
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,7 +47,7 @@ public abstract class StandardController<IEntity, TModel> : ControllerBase
     public async Task<ActionResult> RetrieveById([FromRoute] string id)
     {
         await Task.CompletedTask;
-        return Ok(new TModel { Id = id }.Map());
+        return Ok(new TResult().Instantiate(new TModel { Id = id }.Map()));
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -54,7 +61,7 @@ public abstract class StandardController<IEntity, TModel> : ControllerBase
 
         await Task.CompletedTask;
 
-        return Ok(result);
+        return Ok(new TResult().Instantiate(result));
     }
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -33,6 +33,7 @@ public class TenantViewModel : ViewModel<ITenant>, ITenant
     {
         return new Tenant
         {
+            Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,
             BirthDate = BirthDate,
