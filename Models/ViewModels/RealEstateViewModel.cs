@@ -39,6 +39,7 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
     {
         return new RealEstate
         {
+            Id = Id,
             Address = Address,
             Type = Type,
             GrossBuildingArea = GrossBuildingArea,

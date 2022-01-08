@@ -26,6 +26,7 @@ public class RealtorViewModel : ViewModel<IRealtor>, IRealtor
     {
         return new Realtor
         {
+            Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,
             BirthDate = BirthDate,
