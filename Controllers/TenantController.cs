@@ -1,4 +1,4 @@
-using real_estate_web_api.Models.Entities.Tenants;
+using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Results;
 using real_estate_web_api.Models.ViewModels;
 

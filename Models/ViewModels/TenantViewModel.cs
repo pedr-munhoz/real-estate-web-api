@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities;
-using real_estate_web_api.Models.Entities.Tenants;
+using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.ViewModels;
 
@@ -29,10 +28,11 @@ public class TenantViewModel : ViewModel<ITenant>, ITenant
     public double Income { get; set; }
     public bool? InterestedInBuying { get; set; }
 
-    public override Tenant Map()
+    public override ITenant Map()
     {
-        return new Tenant
+        return new Person
         {
+            IsTenant = true,
             Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using real_estate_web_api.Models.Entities.Owners;
+using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.ViewModels;
 
@@ -24,10 +24,11 @@ public class OwnerViewModel : ViewModel<IOwner>, IOwner
     [Required]
     public string Mobile { get; set; } = "";
 
-    public override Owner Map()
+    public override IOwner Map()
     {
-        return new Owner
+        return new Person
         {
+            IsOwner = true,
             Id = Id,
             TaxDocument = TaxDocument,
             Address = Address,

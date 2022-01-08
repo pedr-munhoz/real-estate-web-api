@@ -1,6 +1,6 @@
-namespace real_estate_web_api.Models.Entities.Tenants;
+namespace real_estate_web_api.Models.Entities.People;
 
-public class Tenant : EntityModel, ITenant
+public class Person : EntityModel, IPerson
 {
     public string TaxDocument { get; set; } = "";
     public string Address { get; set; } = "";
@@ -10,4 +10,7 @@ public class Tenant : EntityModel, ITenant
     public string Mobile { get; set; } = "";
     public double Income { get; set; }
     public bool? InterestedInBuying { get; set; }
+    public bool IsOwner { get; set; }
+    public bool IsRealtor { get; set; }
+    public bool IsTenant { get; set; }
 }

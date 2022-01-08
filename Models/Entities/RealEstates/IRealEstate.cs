@@ -1,3 +1,4 @@
+using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.Entities.RealEstates;
@@ -13,4 +14,6 @@ public interface IRealEstate : IEntityModel
     double? SaleAmount { get; set; }
     bool RentAvailable { get; set; }
     double? RentAmount { get; set; }
+    IOwner Owner { get; set; }
+    IRealtor Realtor { get; set; }
 }
