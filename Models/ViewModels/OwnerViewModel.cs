@@ -25,7 +25,7 @@ public class OwnerViewModel : Owner, ViewModel<Owner>
     public override string Mobile { get; set; } = "";
 
     [JsonIgnore]
-    public override DateTime CreatedAt { get; set; } = DateTime.Now;
+    public override DateTime CreatedAt { get; set; }
 
     [JsonIgnore]
     public override DateTime? InactivatedAt { get; set; }
@@ -37,7 +37,8 @@ public class OwnerViewModel : Owner, ViewModel<Owner>
             TaxDocument = TaxDocument,
             Address = Address,
             BirthDate = BirthDate,
-            FirstName = LastName,
+            FirstName = FirstName,
+            LastName = LastName,
             Mobile = Mobile,
         };
     }
