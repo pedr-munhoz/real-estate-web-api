@@ -2,13 +2,16 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Services;
 
-public class OwnerManager : StandardManager<IOwner>
+public class OwnerManager : IManager<IOwner>
 {
-    public OwnerManager(IRepository<IOwner> repository) : base(repository)
+    private readonly IRepository<Person> _repository;
+
+    public OwnerManager(IRepository<Person> repository)
     {
+        _repository = repository;
     }
 
-    public async override Task<ServiceResult<IOwner>> Create(IOwner entity)
+    public async Task<ServiceResult<IOwner>> Create(IOwner entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
@@ -18,12 +21,40 @@ public class OwnerManager : StandardManager<IOwner>
             return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Create(entity);
+        var result = await _repository.Create(ToPerson(entity));
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult> Delete(string id)
+    {
+        var result = await _repository.Delete(id);
 
         return result;
     }
 
-    public async override Task<ServiceResult<IOwner>> Update(IOwner entity)
+    public async Task<ServiceResult<List<IOwner>>> Retrieve()
+    {
+        var result = await _repository.Retrieve();
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<IOwner>> Retrieve(string id)
+    {
+        var result = await _repository.Retrieve(id);
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> expression)
+    {
+        var result = await _repository.Search(expression);
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<IOwner>> Update(IOwner entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
@@ -33,9 +64,9 @@ public class OwnerManager : StandardManager<IOwner>
             return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Update(entity);
+        var result = await _repository.Update(ToPerson(entity));
 
-        return result;
+        return ToOwnerResult(result);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
@@ -63,5 +94,44 @@ public class OwnerManager : StandardManager<IOwner>
         }
 
         return new ServiceResult(success: true);
+    }
+
+    private Person ToPerson(IOwner owner)
+    {
+        return new Person
+        {
+            IsOwner = true,
+            Id = owner.Id,
+            TaxDocument = owner.TaxDocument,
+            Address = owner.Address,
+            BirthDate = owner.BirthDate,
+            FirstName = owner.FirstName,
+            LastName = owner.LastName,
+            Mobile = owner.Mobile,
+        };
+    }
+
+    private ServiceResult<IOwner> ToOwnerResult(ServiceResult<Person> result)
+    {
+        if (result.Success)
+        {
+            ArgumentNullException.ThrowIfNull(result.Content);
+            return new ServiceResult<IOwner>(result.Content);
+        }
+
+        ArgumentNullException.ThrowIfNull(result.Error);
+        return new ServiceResult<IOwner>(result.Error);
+    }
+
+    private ServiceResult<List<IOwner>> ToOwnerResult(ServiceResult<List<Person>> result)
+    {
+        if (result.Success)
+        {
+            ArgumentNullException.ThrowIfNull(result.Content);
+            return new ServiceResult<List<IOwner>>(new List<IOwner>(result.Content));
+        }
+
+        ArgumentNullException.ThrowIfNull(result.Error);
+        return new ServiceResult<List<IOwner>>(result.Error);
     }
 }
