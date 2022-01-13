@@ -1,10 +1,13 @@
 using real_estate_web_api.Models.Entities.Rentals;
 using real_estate_web_api.Models.Results;
 using real_estate_web_api.Models.ViewModels;
+using real_estate_web_api.Services;
 
 namespace real_estate_web_api.Controllers;
 
 public class RentalController : StandardController<IRental, RentalViewModel, RentalDeepResult>
 {
-
+    public RentalController(IRepository<IRental> repository) : base(repository)
+    {
+    }
 }

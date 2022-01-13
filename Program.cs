@@ -1,3 +1,8 @@
+using real_estate_web_api.Models.Entities.People;
+using real_estate_web_api.Models.Entities.RealEstates;
+using real_estate_web_api.Models.Entities.Rentals;
+using real_estate_web_api.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +17,12 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
+
+builder.Services.AddTransient<IRepository<IOwner>, ListRepository<IOwner>>();
+builder.Services.AddTransient<IRepository<IRealtor>, ListRepository<IRealtor>>();
+builder.Services.AddTransient<IRepository<ITenant>, ListRepository<ITenant>>();
+builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEstate>>();
+builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
 
 var app = builder.Build();
 

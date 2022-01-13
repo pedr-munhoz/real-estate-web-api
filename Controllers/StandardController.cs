@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using real_estate_web_api.Models.Entities;
 using real_estate_web_api.Models.Results;
 using real_estate_web_api.Models.ViewModels;
+using real_estate_web_api.Services;
 
 namespace real_estate_web_api.Controllers;
 
@@ -12,18 +13,26 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     where TModel : ViewModel<TEntity>, new()
     where TResult : Result<TEntity>, new()
 {
+    private readonly IRepository<TEntity> _repository;
+
+    protected StandardController(IRepository<TEntity> repository)
+    {
+        _repository = repository;
+    }
+
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status422UnprocessableEntity)]
     [HttpPost]
     [Route("")]
     public async Task<ActionResult> Create([FromBody] TModel model)
     {
-        var result = model.Map();
+        var result = await _repository.Create(model.Map());
 
-        await Task.CompletedTask;
+        if (result.Success && result.Content != null)
+            return Created($"/{result.Content.Id}", new TResult().Instantiate(result.Content));
 
-        return Created($"/{result.Id}", new TResult().Instantiate(result));
+        return UnprocessableEntity(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,46 +40,56 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("")]
     public async Task<ActionResult> Retrieve()
     {
-        await Task.CompletedTask;
-        var results = new List<Result<TEntity>>();
+        var result = await _repository.Retrieve();
 
-        for (int i = 0; i < 3; i++)
-            results.Add(new TResult().Instantiate(new TModel().Map()));
+        if (result.Success && result.Content != null)
+            return Ok(result.Content.Select(x => new TResult().Instantiate(x)).ToList());
 
-        return Ok(new ListResult<TEntity>(results));
+        return UnprocessableEntity(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult> RetrieveById([FromRoute] string id)
     {
-        await Task.CompletedTask;
-        return Ok(new TResult().Instantiate(new TModel { Id = id }.Map()));
+        var result = await _repository.Retrieve(id);
+
+        if (result.Success && result.Content != null)
+            return Ok(new TResult().Instantiate(result.Content));
+
+        return NotFound(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status422UnprocessableEntity)]
     [HttpPut]
     [Route("")]
     public async Task<ActionResult> Update([FromBody] TModel model)
     {
-        var result = model.Map();
+        var result = await _repository.Update(model.Map());
 
-        await Task.CompletedTask;
+        if (result.Success && result.Content != null)
+            return Ok(new TResult().Instantiate(result.Content));
+        else if (result.Error != null && result.Error.Code == 404)
+            return NotFound(result.Error);
 
-        return Ok(new TResult().Instantiate(result));
+        return UnprocessableEntity(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpDelete]
     [Route("{id}")]
     public async Task<ActionResult> Delete([FromRoute] string id)
     {
-        await Task.CompletedTask;
-        return NoContent();
+        var result = await _repository.Delete(id);
+
+        if (result.Success)
+            return NoContent();
+
+        return NotFound(result.Error);
     }
 }
