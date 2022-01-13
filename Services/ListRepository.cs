@@ -25,7 +25,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
+            var error = new ServiceError("Entity not found", $"No entity could be located for id: {id}", 404);
             return new ServiceResult(false, error);
         }
 
@@ -49,7 +49,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
+            var error = new ServiceError("Entity not found", $"No entity could be located for id: {id}", 404);
             return new ServiceResult<T>(error);
         }
 
@@ -64,7 +64,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {newEntity.Id}", 404);
+            var error = new ServiceError("Entity not found", $"No entity could be located for id: {newEntity.Id}", 404);
             return new ServiceResult<T>(error);
         }
 

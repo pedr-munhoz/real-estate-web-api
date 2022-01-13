@@ -4,12 +4,12 @@ public class ServiceError
 {
     public ServiceError(string name, string message, int code)
     {
-        Name = name;
+        Error = name;
         Message = message;
         Code = code;
     }
 
-    public string Name { get; set; }
+    public string Error { get; set; }
     public string Message { get; set; }
     public int Code { get; set; }
 }
