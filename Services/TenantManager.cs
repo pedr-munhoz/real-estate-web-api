@@ -2,13 +2,16 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Services;
 
-public class TenantManager : StandardManager<ITenant>
+public class TenantManager : IManager<ITenant>
 {
-    public TenantManager(IRepository<ITenant> repository) : base(repository)
+    private readonly IRepository<Person> _repository;
+
+    public TenantManager(IRepository<Person> repository)
     {
+        _repository = repository;
     }
 
-    public async override Task<ServiceResult<ITenant>> Create(ITenant entity)
+    public async Task<ServiceResult<ITenant>> Create(ITenant entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
@@ -18,12 +21,40 @@ public class TenantManager : StandardManager<ITenant>
             return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Create(entity);
+        var result = await _repository.Create(ToPerson(entity));
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult> Delete(string id)
+    {
+        var result = await _repository.Delete(id);
 
         return result;
     }
 
-    public async override Task<ServiceResult<ITenant>> Update(ITenant entity)
+    public async Task<ServiceResult<List<ITenant>>> Retrieve()
+    {
+        var result = await _repository.Retrieve();
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<ITenant>> Retrieve(string id)
+    {
+        var result = await _repository.Retrieve(id);
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<List<ITenant>>> Search(Func<ITenant, bool> expression)
+    {
+        var result = await _repository.Search(expression);
+
+        return ToOwnerResult(result);
+    }
+
+    public async Task<ServiceResult<ITenant>> Update(ITenant entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
@@ -33,9 +64,9 @@ public class TenantManager : StandardManager<ITenant>
             return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Update(entity);
+        var result = await _repository.Update(ToPerson(entity));
 
-        return result;
+        return ToOwnerResult(result);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
@@ -64,5 +95,45 @@ public class TenantManager : StandardManager<ITenant>
 
         return new ServiceResult(success: true);
     }
-}
 
+    private Person ToPerson(ITenant tenant)
+    {
+        return new Person
+        {
+            IsTenant = true,
+            Id = tenant.Id,
+            TaxDocument = tenant.TaxDocument,
+            Address = tenant.Address,
+            BirthDate = tenant.BirthDate,
+            FirstName = tenant.FirstName,
+            LastName = tenant.LastName,
+            Mobile = tenant.Mobile,
+            Income = tenant.Income,
+            InterestedInBuying = tenant.InterestedInBuying,
+        };
+    }
+
+    private ServiceResult<ITenant> ToOwnerResult(ServiceResult<Person> result)
+    {
+        if (result.Success)
+        {
+            ArgumentNullException.ThrowIfNull(result.Content);
+            return new ServiceResult<ITenant>(result.Content);
+        }
+
+        ArgumentNullException.ThrowIfNull(result.Error);
+        return new ServiceResult<ITenant>(result.Error);
+    }
+
+    private ServiceResult<List<ITenant>> ToOwnerResult(ServiceResult<List<Person>> result)
+    {
+        if (result.Success)
+        {
+            ArgumentNullException.ThrowIfNull(result.Content);
+            return new ServiceResult<List<ITenant>>(new List<ITenant>(result.Content));
+        }
+
+        ArgumentNullException.ThrowIfNull(result.Error);
+        return new ServiceResult<List<ITenant>>(result.Error);
+    }
+}

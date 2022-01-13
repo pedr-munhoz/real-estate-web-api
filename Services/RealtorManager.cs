@@ -96,18 +96,18 @@ public class RealtorManager : IManager<IRealtor>
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(IRealtor owner)
+    private Person ToPerson(IRealtor realtor)
     {
         return new Person
         {
-            IsOwner = true,
-            Id = owner.Id,
-            TaxDocument = owner.TaxDocument,
-            Address = owner.Address,
-            BirthDate = owner.BirthDate,
-            FirstName = owner.FirstName,
-            LastName = owner.LastName,
-            Mobile = owner.Mobile,
+            IsRealtor = true,
+            Id = realtor.Id,
+            TaxDocument = realtor.TaxDocument,
+            Address = realtor.Address,
+            BirthDate = realtor.BirthDate,
+            FirstName = realtor.FirstName,
+            LastName = realtor.LastName,
+            Mobile = realtor.Mobile,
         };
     }
 
