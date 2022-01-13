@@ -25,7 +25,7 @@ builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEsta
 builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
 
 builder.Services.AddTransient<IManager<IOwner>, OwnerManager>();
-builder.Services.AddTransient<IManager<IRealtor>, StandardManager<IRealtor>>();
+builder.Services.AddTransient<IManager<IRealtor>, RealtorManager>();
 builder.Services.AddTransient<IManager<ITenant>, StandardManager<ITenant>>();
 builder.Services.AddTransient<IManager<IRealEstate>, StandardManager<IRealEstate>>();
 builder.Services.AddTransient<IManager<Rental>, StandardManager<Rental>>();
