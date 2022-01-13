@@ -2,20 +2,20 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Services;
 
-public class OwnerManager : StandardManager<IOwner>
+public class TenantManager : StandardManager<ITenant>
 {
-    public OwnerManager(IRepository<IOwner> repository) : base(repository)
+    public TenantManager(IRepository<ITenant> repository) : base(repository)
     {
     }
 
-    public async override Task<ServiceResult<IOwner>> Create(IOwner entity)
+    public async override Task<ServiceResult<ITenant>> Create(ITenant entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
+            return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
         }
 
         var result = await _repository.Create(entity);
@@ -23,14 +23,14 @@ public class OwnerManager : StandardManager<IOwner>
         return result;
     }
 
-    public async override Task<ServiceResult<IOwner>> Update(IOwner entity)
+    public async override Task<ServiceResult<ITenant>> Update(ITenant entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
+            return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
         }
 
         var result = await _repository.Update(entity);
@@ -65,3 +65,4 @@ public class OwnerManager : StandardManager<IOwner>
         return new ServiceResult(success: true);
     }
 }
+
