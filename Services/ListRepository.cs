@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Linq.Expressions;
 using real_estate_web_api.Models.Entities;
 
 namespace real_estate_web_api.Services;
@@ -32,6 +34,13 @@ public class ListRepository<T> : IRepository<T>
         _data.Remove(entity);
 
         return new ServiceResult(true);
+    }
+
+    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> expression)
+    {
+        await Task.CompletedTask;
+
+        return new ServiceResult<List<T>>(_data.Where(expression).ToList());
     }
 
     public async Task<ServiceResult<List<T>>> Retrieve()
