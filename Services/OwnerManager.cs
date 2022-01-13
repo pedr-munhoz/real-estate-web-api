@@ -35,14 +35,14 @@ public class OwnerManager : IManager<IOwner>
 
     public async Task<ServiceResult<List<IOwner>>> Retrieve()
     {
-        var result = await _repository.Retrieve();
+        var result = await _repository.Search(x => x.IsOwner);
 
         return ToOwnerResult(result);
     }
 
     public async Task<ServiceResult<IOwner>> Retrieve(string id)
     {
-        var result = await _repository.Retrieve(id);
+        var result = await _repository.Find(x => x.IsOwner && x.Id == id);
 
         return ToOwnerResult(result);
     }

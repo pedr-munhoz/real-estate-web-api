@@ -82,4 +82,18 @@ public class ListRepository<T> : IRepository<T>
 
         return new ServiceResult<T>(newEntity);
     }
+
+    public async Task<ServiceResult<T>> Find(Func<T, bool> expression)
+    {
+        await Task.CompletedTask;
+
+        var entity = _data.Where(expression).FirstOrDefault();
+        if (entity == null)
+        {
+            var error = new ServiceError("Entity not found", $"No entity could be located", 404);
+            return new ServiceResult<T>(error);
+        }
+
+        return new ServiceResult<T>(entity);
+    }
 }
