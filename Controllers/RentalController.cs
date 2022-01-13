@@ -7,7 +7,7 @@ namespace real_estate_web_api.Controllers;
 
 public class RentalController : StandardController<IRental, RentalViewModel, RentalDeepResult>
 {
-    public RentalController(IRepository<IRental> repository) : base(repository)
+    public RentalController(IManager<IRental> manager) : base(manager)
     {
     }
 }

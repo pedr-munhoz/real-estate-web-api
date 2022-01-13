@@ -24,6 +24,12 @@ builder.Services.AddTransient<IRepository<ITenant>, ListRepository<ITenant>>();
 builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEstate>>();
 builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
 
+builder.Services.AddTransient<IManager<IOwner>, OwnerManager>();
+builder.Services.AddTransient<IManager<IRealtor>, StandardManager<IRealtor>>();
+builder.Services.AddTransient<IManager<ITenant>, StandardManager<ITenant>>();
+builder.Services.AddTransient<IManager<IRealEstate>, StandardManager<IRealEstate>>();
+builder.Services.AddTransient<IManager<Rental>, StandardManager<Rental>>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

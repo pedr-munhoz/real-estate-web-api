@@ -2,9 +2,9 @@ namespace real_estate_web_api.Services;
 
 public class ServiceError
 {
-    public ServiceError(string name, string message, int code)
+    public ServiceError(string error, string message, int code)
     {
-        Error = name;
+        Error = error;
         Message = message;
         Code = code;
     }

@@ -7,7 +7,7 @@ namespace real_estate_web_api.Controllers;
 
 public class RealtorController : StandardController<IRealtor, RealtorViewModel, RealtorResult>
 {
-    public RealtorController(IRepository<IRealtor> repository) : base(repository)
+    public RealtorController(IManager<IRealtor> manager) : base(manager)
     {
     }
 }
