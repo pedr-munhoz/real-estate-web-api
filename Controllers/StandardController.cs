@@ -22,7 +22,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
 
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status422UnprocessableEntity)]
     [HttpPost]
     [Route("")]
     public async Task<ActionResult> Create([FromBody] TModel model)
@@ -49,7 +49,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult> RetrieveById([FromRoute] string id)
@@ -59,12 +59,12 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
         if (result.Success && result.Content != null)
             return Ok(new TResult().Instantiate(result.Content));
 
-        return NotFound();
+        return NotFound(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status422UnprocessableEntity)]
     [HttpPut]
     [Route("")]
     public async Task<ActionResult> Update([FromBody] TModel model)
@@ -74,13 +74,13 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
         if (result.Success && result.Content != null)
             return Ok(new TResult().Instantiate(result.Content));
         else if (result.Error != null && result.Error.Code == 404)
-            return NotFound();
+            return NotFound(result.Error);
 
         return UnprocessableEntity(result.Error);
     }
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpDelete]
     [Route("{id}")]
     public async Task<ActionResult> Delete([FromRoute] string id)
@@ -90,6 +90,6 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
         if (result.Success)
             return NoContent();
 
-        return NotFound();
+        return NotFound(result.Error);
     }
 }
