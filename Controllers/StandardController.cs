@@ -13,7 +13,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     where TModel : ViewModel<TEntity>, new()
     where TResult : Result<TEntity>, new()
 {
-    private readonly IManager<TEntity> _manager;
+    protected readonly IManager<TEntity> _manager;
 
     protected StandardController(IManager<TEntity> manager)
     {

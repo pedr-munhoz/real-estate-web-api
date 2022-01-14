@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Results;
 using real_estate_web_api.Models.ViewModels;
@@ -9,5 +10,21 @@ public class OwnerController : StandardController<IOwner, OwnerViewModel, OwnerR
 {
     public OwnerController(IManager<IOwner> manager) : base(manager)
     {
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpGet]
+    [Route("search")]
+    public async Task<ActionResult> Search([FromQuery] string? taxDocument, string? lastName)
+    {
+        var result = await _manager.Search(x =>
+            (x.TaxDocument == taxDocument || taxDocument == null) &&
+            (x.LastName == lastName || lastName == null)
+        );
+
+        if (result.Success && result.Content != null)
+            return Ok(result.Content.Select(x => new OwnerResult(x)).ToList());
+
+        return UnprocessableEntity(result.Error);
     }
 }
