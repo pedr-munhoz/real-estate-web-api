@@ -13,19 +13,19 @@ public class OwnerManager : IManager<IOwner>
 
     public async Task<ServiceResult<IOwner>> Create(IOwner entity)
     {
-        var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
+        var taxDocumentAvailableResult = await CheckTaxDocument(entity.TaxDocument);
 
-        if (!taxDocumentAvailable.Success)
+        if (!taxDocumentAvailableResult.Success)
         {
-            ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
+            ArgumentNullException.ThrowIfNull(taxDocumentAvailableResult.Error);
+            return new ServiceResult<IOwner>(taxDocumentAvailableResult.Error);
         }
 
-        var existingPerson = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsOwner);
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsOwner);
 
-        if (existingPerson.Success && existingPerson.Content != null)
+        if (existingPersonResult.Success && existingPersonResult.Content != null)
         {
-            var updatedPerson = existingPerson.Content;
+            var updatedPerson = existingPersonResult.Content;
             CopyToPerson(entity, updatedPerson);
 
             var updateResult = await _repository.Update(updatedPerson);
@@ -58,15 +58,13 @@ public class OwnerManager : IManager<IOwner>
         return ToOwnerResult(result);
     }
 
-    // TODO: filter owners
-    public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> expression)
+    public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> filter)
     {
-        var result = await _repository.Search(expression);
+        var result = await _repository.Search(filter, x => x.IsOwner);
 
         return ToOwnerResult(result);
     }
 
-    // TODO: filter owners
     public async Task<ServiceResult<IOwner>> Update(IOwner entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
@@ -77,9 +75,18 @@ public class OwnerManager : IManager<IOwner>
             return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Update(ToPerson(entity));
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsOwner);
 
-        return ToOwnerResult(result);
+        if (existingPersonResult.Success && existingPersonResult.Content != null)
+        {
+            var updatedPerson = existingPersonResult.Content;
+            CopyToPerson(entity, updatedPerson);
+
+            var updateResult = await _repository.Update(updatedPerson);
+            return ToOwnerResult(updateResult);
+        }
+
+        return ToOwnerResult(existingPersonResult);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)

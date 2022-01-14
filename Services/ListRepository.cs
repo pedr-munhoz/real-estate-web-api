@@ -36,11 +36,15 @@ public class ListRepository<T> : IRepository<T>
         return new ServiceResult(true);
     }
 
-    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> expression)
+    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
     {
         await Task.CompletedTask;
 
-        return new ServiceResult<List<T>>(_data.Where(expression).ToList());
+        var result = secondaryFilter == null
+            ? new ServiceResult<List<T>>(_data.Where(filter).ToList())
+            : new ServiceResult<List<T>>(_data.Where(filter).Where(secondaryFilter).ToList());
+
+        return result;
     }
 
     public async Task<ServiceResult<List<T>>> Retrieve()

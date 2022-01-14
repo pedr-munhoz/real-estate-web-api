@@ -9,7 +9,7 @@ public interface IRepository<T>
     Task<ServiceResult<T>> Create(T entity);
     Task<ServiceResult<List<T>>> Retrieve();
     Task<ServiceResult<T>> Retrieve(string id);
-    Task<ServiceResult<List<T>>> Search(Func<T, bool> expression);
+    Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null);
     Task<ServiceResult<T>> Find(Func<T, bool> expression);
     Task<ServiceResult<T>> Update(T entity);
     Task<ServiceResult> Delete(string id);
