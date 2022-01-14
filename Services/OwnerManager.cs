@@ -29,12 +29,12 @@ public class OwnerManager : IManager<IOwner>
             CopyToPerson(entity, updatedPerson);
 
             var updateResult = await _repository.Update(updatedPerson);
-            return ToOwnerResult(updateResult);
+            return ToEntityResult(updateResult);
         }
 
         var result = await _repository.Create(ToPerson(entity));
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult> Delete(string id)
@@ -48,21 +48,21 @@ public class OwnerManager : IManager<IOwner>
     {
         var result = await _repository.Search(x => x.IsOwner);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IOwner>> Retrieve(string id)
     {
         var result = await _repository.Find(x => x.IsOwner && x.Id == id);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> filter)
     {
         var result = await _repository.Search(filter, x => x.IsOwner);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IOwner>> Update(IOwner entity)
@@ -83,10 +83,10 @@ public class OwnerManager : IManager<IOwner>
             CopyToPerson(entity, updatedPerson);
 
             var updateResult = await _repository.Update(updatedPerson);
-            return ToOwnerResult(updateResult);
+            return ToEntityResult(updateResult);
         }
 
-        return ToOwnerResult(existingPersonResult);
+        return ToEntityResult(existingPersonResult);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
@@ -116,34 +116,34 @@ public class OwnerManager : IManager<IOwner>
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(IOwner owner)
+    private Person ToPerson(IOwner entity)
     {
         return new Person
         {
             IsOwner = true,
-            Id = owner.Id,
-            TaxDocument = owner.TaxDocument,
-            Address = owner.Address,
-            BirthDate = owner.BirthDate,
-            FirstName = owner.FirstName,
-            LastName = owner.LastName,
-            Mobile = owner.Mobile,
+            Id = entity.Id,
+            TaxDocument = entity.TaxDocument,
+            Address = entity.Address,
+            BirthDate = entity.BirthDate,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Mobile = entity.Mobile,
         };
     }
 
-    private void CopyToPerson(IOwner owner, Person person)
+    private void CopyToPerson(IOwner entity, Person person)
     {
         person.IsOwner = true;
-        person.Id = owner.Id;
-        person.TaxDocument = owner.TaxDocument;
-        person.Address = owner.Address;
-        person.BirthDate = owner.BirthDate;
-        person.FirstName = owner.FirstName;
-        person.LastName = owner.LastName;
-        person.Mobile = owner.Mobile;
+        person.Id = entity.Id;
+        person.TaxDocument = entity.TaxDocument;
+        person.Address = entity.Address;
+        person.BirthDate = entity.BirthDate;
+        person.FirstName = entity.FirstName;
+        person.LastName = entity.LastName;
+        person.Mobile = entity.Mobile;
     }
 
-    private ServiceResult<IOwner> ToOwnerResult(ServiceResult<Person> result)
+    private ServiceResult<IOwner> ToEntityResult(ServiceResult<Person> result)
     {
         if (result.Success)
         {
@@ -155,7 +155,7 @@ public class OwnerManager : IManager<IOwner>
         return new ServiceResult<IOwner>(result.Error);
     }
 
-    private ServiceResult<List<IOwner>> ToOwnerResult(ServiceResult<List<Person>> result)
+    private ServiceResult<List<IOwner>> ToEntityResult(ServiceResult<List<Person>> result)
     {
         if (result.Success)
         {
