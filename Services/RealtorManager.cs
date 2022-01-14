@@ -13,17 +13,28 @@ public class RealtorManager : IManager<IRealtor>
 
     public async Task<ServiceResult<IRealtor>> Create(IRealtor entity)
     {
-        var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
+        var taxDocumentAvailableResult = await CheckTaxDocument(entity.TaxDocument);
 
-        if (!taxDocumentAvailable.Success)
+        if (!taxDocumentAvailableResult.Success)
         {
-            ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<IRealtor>(taxDocumentAvailable.Error);
+            ArgumentNullException.ThrowIfNull(taxDocumentAvailableResult.Error);
+            return new ServiceResult<IRealtor>(taxDocumentAvailableResult.Error);
+        }
+
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsRealtor);
+
+        if (existingPersonResult.Success && existingPersonResult.Content != null)
+        {
+            var updatedPerson = existingPersonResult.Content;
+            CopyToPerson(entity, updatedPerson);
+
+            var updateResult = await _repository.Update(updatedPerson);
+            return ToEntityResult(updateResult);
         }
 
         var result = await _repository.Create(ToPerson(entity));
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult> Delete(string id)
@@ -35,23 +46,23 @@ public class RealtorManager : IManager<IRealtor>
 
     public async Task<ServiceResult<List<IRealtor>>> Retrieve()
     {
-        var result = await _repository.Retrieve();
+        var result = await _repository.Search(x => x.IsRealtor);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IRealtor>> Retrieve(string id)
     {
-        var result = await _repository.Retrieve(id);
+        var result = await _repository.Find(x => x.IsRealtor && x.Id == id);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<List<IRealtor>>> Search(Func<IRealtor, bool> expression)
+    public async Task<ServiceResult<List<IRealtor>>> Search(Func<IRealtor, bool> filter)
     {
-        var result = await _repository.Search(expression);
+        var result = await _repository.Search(filter, x => x.IsRealtor);
 
-        return ToOwnerResult(result);
+        return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IRealtor>> Update(IRealtor entity)
@@ -64,16 +75,25 @@ public class RealtorManager : IManager<IRealtor>
             return new ServiceResult<IRealtor>(taxDocumentAvailable.Error);
         }
 
-        var result = await _repository.Update(ToPerson(entity));
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsRealtor);
 
-        return ToOwnerResult(result);
+        if (existingPersonResult.Success && existingPersonResult.Content != null)
+        {
+            var updatedPerson = existingPersonResult.Content;
+            CopyToPerson(entity, updatedPerson);
+
+            var updateResult = await _repository.Update(updatedPerson);
+            return ToEntityResult(updateResult);
+        }
+
+        return ToEntityResult(existingPersonResult);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
     {
-        var owners = await _repository.Search(x => x.TaxDocument == taxDocument);
+        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsRealtor);
 
-        if (!owners.Success || owners.Content == null)
+        if (!entities.Success || entities.Content == null)
         {
             var serverError = new ServiceError(
                 error: "Operation failed",
@@ -83,7 +103,7 @@ public class RealtorManager : IManager<IRealtor>
             return new ServiceResult(success: false, serverError);
         }
 
-        if (owners.Content.Any())
+        if (entities.Content.Any())
         {
             var duplicateTaxDocumentError = new ServiceError(
                 error: "Duplicate tax document",
@@ -96,22 +116,34 @@ public class RealtorManager : IManager<IRealtor>
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(IRealtor realtor)
+    private Person ToPerson(IRealtor entity)
     {
         return new Person
         {
             IsRealtor = true,
-            Id = realtor.Id,
-            TaxDocument = realtor.TaxDocument,
-            Address = realtor.Address,
-            BirthDate = realtor.BirthDate,
-            FirstName = realtor.FirstName,
-            LastName = realtor.LastName,
-            Mobile = realtor.Mobile,
+            Id = entity.Id,
+            TaxDocument = entity.TaxDocument,
+            Address = entity.Address,
+            BirthDate = entity.BirthDate,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Mobile = entity.Mobile,
         };
     }
 
-    private ServiceResult<IRealtor> ToOwnerResult(ServiceResult<Person> result)
+    private void CopyToPerson(IRealtor entity, Person person)
+    {
+        person.IsRealtor = true;
+        person.Id = entity.Id;
+        person.TaxDocument = entity.TaxDocument;
+        person.Address = entity.Address;
+        person.BirthDate = entity.BirthDate;
+        person.FirstName = entity.FirstName;
+        person.LastName = entity.LastName;
+        person.Mobile = entity.Mobile;
+    }
+
+    private ServiceResult<IRealtor> ToEntityResult(ServiceResult<Person> result)
     {
         if (result.Success)
         {
@@ -123,7 +155,7 @@ public class RealtorManager : IManager<IRealtor>
         return new ServiceResult<IRealtor>(result.Error);
     }
 
-    private ServiceResult<List<IRealtor>> ToOwnerResult(ServiceResult<List<Person>> result)
+    private ServiceResult<List<IRealtor>> ToEntityResult(ServiceResult<List<Person>> result)
     {
         if (result.Success)
         {

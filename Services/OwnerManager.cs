@@ -91,9 +91,9 @@ public class OwnerManager : IManager<IOwner>
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
     {
-        var owners = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsOwner);
+        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsOwner);
 
-        if (!owners.Success || owners.Content == null)
+        if (!entities.Success || entities.Content == null)
         {
             var serverError = new ServiceError(
                 error: "Operation failed",
@@ -103,7 +103,7 @@ public class OwnerManager : IManager<IOwner>
             return new ServiceResult(success: false, serverError);
         }
 
-        if (owners.Content.Any())
+        if (entities.Content.Any())
         {
             var duplicateTaxDocumentError = new ServiceError(
                 error: "Duplicate tax document",
