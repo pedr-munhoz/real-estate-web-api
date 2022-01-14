@@ -8,8 +8,7 @@ namespace real_estate_web_api.Controllers;
 
 [ApiController]
 [Route("api/v2/[controller]")]
-public abstract class StandardController<TEntity, TModel, TResult> : ControllerBase
-    where TEntity : IEntityModel
+public abstract class StandardController<TEntity, TModel, TResult> : ControllerBase, IController<TEntity, TModel> where TEntity : IEntityModel
     where TModel : ViewModel<TEntity>, new()
     where TResult : Result<TEntity>, new()
 {
