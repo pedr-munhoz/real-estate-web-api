@@ -1,5 +1,6 @@
 using real_estate_web_api.Models.Entities.RealEstates;
 using real_estate_web_api.Models.Entities.Rentals;
+using real_estate_web_api.Services.RealEstates;
 using real_estate_web_api.Services.Realtors;
 using real_estate_web_api.Services.Tenants;
 
@@ -7,13 +8,13 @@ namespace real_estate_web_api.Services.Rentals;
 
 public class RentalManager : StandardManager<IRental>, IRentalManager
 {
-    private readonly IManager<IRealEstate> _realEstateManager;
+    private readonly IRealEstateManager _realEstateManager;
     private readonly IRealtorManager _realtorManager;
     private readonly ITenantManager _tenantManager;
 
     public RentalManager(
         IRepository<IRental> repository,
-        IManager<IRealEstate> realEstateManager,
+        IRealEstateManager realEstateManager,
         IRealtorManager realtorManager,
         ITenantManager tentantManager)
     : base(repository)
@@ -29,16 +30,16 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         if (!validReferencesResult.Success)
             return validReferencesResult;
 
-        var result = await _repository.Create(entity);
-
-        return result;
+        return await base.Create(entity);
     }
 
     public override async Task<ServiceResult<IRental>> Update(IRental entity)
     {
-        var result = await _repository.Update(entity);
+        var validReferencesResult = await CheckReferences(entity);
+        if (!validReferencesResult.Success)
+            return validReferencesResult;
 
-        return result;
+        return await base.Update(entity);
     }
 
     private async Task<ServiceResult<IRental>> CheckReferences(IRental entity)

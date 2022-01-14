@@ -27,7 +27,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("Entity not found", $"No entity could be located for id: {id}", 404);
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
             return new ServiceResult(false, error);
         }
 
@@ -62,7 +62,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("Entity not found", $"No entity could be located for id: {id}", 404);
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
             return new ServiceResult<T>(error);
         }
 
