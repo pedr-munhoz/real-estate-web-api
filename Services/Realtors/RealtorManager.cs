@@ -1,27 +1,27 @@
 using real_estate_web_api.Models.Entities.People;
 
-namespace real_estate_web_api.Services;
+namespace real_estate_web_api.Services.Realtors;
 
-public class TenantManager : IManager<ITenant>
+public class RealtorManager : IRealtorManager
 {
     private readonly IRepository<Person> _repository;
 
-    public TenantManager(IRepository<Person> repository)
+    public RealtorManager(IRepository<Person> repository)
     {
         _repository = repository;
     }
 
-    public async Task<ServiceResult<ITenant>> Create(ITenant entity)
+    public async Task<ServiceResult<IRealtor>> Create(IRealtor entity)
     {
         var taxDocumentAvailableResult = await CheckTaxDocument(entity.TaxDocument);
 
         if (!taxDocumentAvailableResult.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailableResult.Error);
-            return new ServiceResult<ITenant>(taxDocumentAvailableResult.Error);
+            return new ServiceResult<IRealtor>(taxDocumentAvailableResult.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsTenant);
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsRealtor);
 
         if (existingPersonResult.Success && existingPersonResult.Content != null)
         {
@@ -44,38 +44,38 @@ public class TenantManager : IManager<ITenant>
         return result;
     }
 
-    public async Task<ServiceResult<List<ITenant>>> Retrieve()
+    public async Task<ServiceResult<List<IRealtor>>> Retrieve()
     {
-        var result = await _repository.Search(x => x.IsTenant);
+        var result = await _repository.Search(x => x.IsRealtor);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<ITenant>> Retrieve(string id)
+    public async Task<ServiceResult<IRealtor>> Retrieve(string id)
     {
-        var result = await _repository.Find(x => x.IsTenant && x.Id == id);
+        var result = await _repository.Find(x => x.IsRealtor && x.Id == id);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<List<ITenant>>> Search(Func<ITenant, bool> filter)
+    public async Task<ServiceResult<List<IRealtor>>> Search(Func<IRealtor, bool> filter)
     {
-        var result = await _repository.Search(filter, x => x.IsTenant);
+        var result = await _repository.Search(filter, x => x.IsRealtor);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<ITenant>> Update(ITenant entity)
+    public async Task<ServiceResult<IRealtor>> Update(IRealtor entity)
     {
         var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
+            return new ServiceResult<IRealtor>(taxDocumentAvailable.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsTenant);
+        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsRealtor);
 
         if (existingPersonResult.Success && existingPersonResult.Content != null)
         {
@@ -91,7 +91,7 @@ public class TenantManager : IManager<ITenant>
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
     {
-        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsTenant);
+        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsRealtor);
 
         if (!entities.Success || entities.Content == null)
         {
@@ -116,11 +116,11 @@ public class TenantManager : IManager<ITenant>
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(ITenant entity)
+    private Person ToPerson(IRealtor entity)
     {
         return new Person
         {
-            IsTenant = true,
+            IsRealtor = true,
             Id = entity.Id,
             TaxDocument = entity.TaxDocument,
             Address = entity.Address,
@@ -128,46 +128,41 @@ public class TenantManager : IManager<ITenant>
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             Mobile = entity.Mobile,
-            Income = entity.Income,
-            InterestedInBuying = entity.InterestedInBuying,
         };
     }
 
-    private void CopyToPerson(ITenant entity, Person person)
+    private void CopyToPerson(IRealtor entity, Person person)
     {
-        person.IsTenant = true;
-        person.Id = entity.Id;
+        person.IsRealtor = true;
         person.TaxDocument = entity.TaxDocument;
         person.Address = entity.Address;
         person.BirthDate = entity.BirthDate;
         person.FirstName = entity.FirstName;
         person.LastName = entity.LastName;
         person.Mobile = entity.Mobile;
-        person.Income = entity.Income;
-        person.InterestedInBuying = entity.InterestedInBuying;
     }
 
-    private ServiceResult<ITenant> ToEntityResult(ServiceResult<Person> result)
+    private ServiceResult<IRealtor> ToEntityResult(ServiceResult<Person> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<ITenant>(result.Content);
+            return new ServiceResult<IRealtor>(result.Content);
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<ITenant>(result.Error);
+        return new ServiceResult<IRealtor>(result.Error);
     }
 
-    private ServiceResult<List<ITenant>> ToEntityResult(ServiceResult<List<Person>> result)
+    private ServiceResult<List<IRealtor>> ToEntityResult(ServiceResult<List<Person>> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<List<ITenant>>(new List<ITenant>(result.Content));
+            return new ServiceResult<List<IRealtor>>(new List<IRealtor>(result.Content));
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<List<ITenant>>(result.Error);
+        return new ServiceResult<List<IRealtor>>(result.Error);
     }
 }

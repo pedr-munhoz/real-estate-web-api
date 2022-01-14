@@ -2,6 +2,10 @@ using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Entities.RealEstates;
 using real_estate_web_api.Models.Entities.Rentals;
 using real_estate_web_api.Services;
+using real_estate_web_api.Services.Owners;
+using real_estate_web_api.Services.Realtors;
+using real_estate_web_api.Services.Rentals;
+using real_estate_web_api.Services.Tenants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,13 +24,13 @@ builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 builder.Services.AddTransient<IRepository<Person>, ListRepository<Person>>();
 builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEstate>>();
-builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
+builder.Services.AddTransient<IRepository<IRental>, ListRepository<IRental>>();
 
-builder.Services.AddTransient<IManager<IOwner>, OwnerManager>();
-builder.Services.AddTransient<IManager<IRealtor>, RealtorManager>();
-builder.Services.AddTransient<IManager<ITenant>, TenantManager>();
+builder.Services.AddTransient<IOwnerManager, OwnerManager>();
+builder.Services.AddTransient<IRealtorManager, RealtorManager>();
+builder.Services.AddTransient<ITenantManager, TenantManager>();
 builder.Services.AddTransient<IManager<IRealEstate>, StandardManager<IRealEstate>>();
-builder.Services.AddTransient<IManager<Rental>, StandardManager<Rental>>();
+builder.Services.AddTransient<IRentalManager, RentalManager>();
 
 var app = builder.Build();
 
