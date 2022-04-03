@@ -1,28 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using real_estate_web_api.Models.Entities.People;
+using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class TenantViewModel : ViewModel<ITenant>, ITenant
+public class TenantViewModel : ViewModel<ITenant>
 {
     [Required]
-    public string TaxDocument { get; set; } = "";
-
-    [Required]
-    public string Address { get; set; } = "";
-
-    [Required]
-    public DateTime BirthDate { get; set; }
-
-    [Required]
-    public string FirstName { get; set; } = "";
-
-    [Required]
-    public string LastName { get; set; } = "";
-
-    [Required]
-    public string Mobile { get; set; } = "";
+    public PersonViewModel Person { get; set; } = new PersonViewModel();
 
     [Range(0, Double.PositiveInfinity)]
     public double Income { get; set; }
@@ -30,18 +16,12 @@ public class TenantViewModel : ViewModel<ITenant>, ITenant
 
     public override ITenant Map()
     {
-        return new Person
+        return new Tenant
         {
-            IsTenant = true,
             Id = Id,
-            TaxDocument = TaxDocument,
-            Address = Address,
-            BirthDate = BirthDate,
-            FirstName = FirstName,
-            LastName = LastName,
-            Mobile = Mobile,
             Income = Income,
             InterestedInBuying = InterestedInBuying,
+            Person = Person.Map(),
         };
     }
 }

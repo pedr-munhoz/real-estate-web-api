@@ -2,7 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Entities.RealEstates;
+using real_estate_web_api.Models.Entities.Realtors;
 using real_estate_web_api.Models.Entities.Rentals;
+using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
@@ -18,13 +20,13 @@ public class RentalViewModel : ViewModel<IRental>, IRental
     public string RealtorId { get; set; } = "";
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Person();
+    public IRealtor Realtor { get; set; } = new Realtor();
 
     [Required]
     public string TenantId { get; set; } = "";
 
     [JsonIgnore]
-    public ITenant Tenant { get; set; } = new Person();
+    public ITenant Tenant { get; set; } = new Tenant();
 
     [Required]
     public DateTime StartDate { get; set; }
@@ -46,8 +48,8 @@ public class RentalViewModel : ViewModel<IRental>, IRental
             EndDate = StartDate.AddMonths(Duration),
             MonthlyAmount = MonthlyAmount,
             RealEstate = new RealEstate { Id = RealEstateId },
-            Realtor = new Person { Id = RealtorId },
-            Tenant = new Person { Id = TenantId },
+            Realtor = new Realtor { Id = RealtorId },
+            Tenant = new Tenant { Id = TenantId },
         };
     }
 }

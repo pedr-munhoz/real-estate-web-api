@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using real_estate_web_api.Models.Entities.Owners;
 using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Entities.RealEstates;
+using real_estate_web_api.Models.Entities.Realtors;
 using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.ViewModels;
@@ -40,13 +42,13 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
     public string OwnerId { get; set; } = "";
 
     [JsonIgnore]
-    public IOwner Owner { get; set; } = new Person();
+    public IOwner Owner { get; set; } = new Owner();
 
     [Required]
     public string RealtorId { get; set; } = "";
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Person();
+    public IRealtor Realtor { get; set; } = new Realtor();
 
     public override RealEstate Map()
     {
@@ -62,8 +64,8 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
             SaleAmount = SaleAmount,
             RentAvailable = RentAvailable,
             RentAmount = RentAmount,
-            Owner = new Person { Id = OwnerId },
-            Realtor = new Person { Id = RealtorId },
+            Owner = new Owner { Id = OwnerId },
+            Realtor = new Realtor { Id = RealtorId },
         };
     }
 }

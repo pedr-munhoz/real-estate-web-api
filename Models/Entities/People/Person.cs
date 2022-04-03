@@ -8,9 +8,4 @@ public class Person : EntityModel, IPerson
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
     public string Mobile { get; set; } = "";
-    public double Income { get; set; }
-    public bool? InterestedInBuying { get; set; }
-    public bool IsOwner { get; set; }
-    public bool IsRealtor { get; set; }
-    public bool IsTenant { get; set; }
 }

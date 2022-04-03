@@ -1,8 +1,11 @@
 namespace real_estate_web_api.Models.Entities.People;
 
-public interface IPerson : IEntityModel, IOwner, IRealtor, ITenant
+public interface IPerson : IEntityModel
 {
-    bool IsOwner { get; set; }
-    bool IsRealtor { get; set; }
-    bool IsTenant { get; set; }
+    string TaxDocument { get; set; }
+    string Address { get; set; }
+    DateTime BirthDate { get; set; }
+    string FirstName { get; set; }
+    string LastName { get; set; }
+    string Mobile { get; set; }
 }
