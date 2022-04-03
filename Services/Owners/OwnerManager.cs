@@ -1,19 +1,20 @@
+using real_estate_web_api.Models.Entities.Owners;
 using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Services.Owners;
 
 public class OwnerManager : IOwnerManager
 {
-    private readonly IRepository<Person> _repository;
+    private readonly IRepository<IOwner> _repository;
 
-    public OwnerManager(IRepository<Person> repository)
+    public OwnerManager(IRepository<IOwner> repository)
     {
         _repository = repository;
     }
 
     public async Task<ServiceResult<IOwner>> Create(IOwner entity)
     {
-        var taxDocumentAvailableResult = await CheckTaxDocument(entity.TaxDocument);
+        var taxDocumentAvailableResult = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailableResult.Success)
         {
@@ -21,18 +22,7 @@ public class OwnerManager : IOwnerManager
             return new ServiceResult<IOwner>(taxDocumentAvailableResult.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsOwner);
-
-        if (existingPersonResult.Success && existingPersonResult.Content != null)
-        {
-            var updatedPerson = existingPersonResult.Content;
-            CopyToPerson(entity, updatedPerson);
-
-            var updateResult = await _repository.Update(updatedPerson);
-            return ToEntityResult(updateResult);
-        }
-
-        var result = await _repository.Create(ToPerson(entity));
+        var result = await _repository.Create(entity);
 
         return ToEntityResult(result);
     }
@@ -46,28 +36,36 @@ public class OwnerManager : IOwnerManager
 
     public async Task<ServiceResult<List<IOwner>>> Retrieve()
     {
-        var result = await _repository.Search(x => x.IsOwner);
+        var result = await _repository.Retrieve();
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IOwner>> Retrieve(string id)
     {
-        var result = await _repository.Find(x => x.IsOwner && x.Id == id);
+        var result = await _repository.Find(x => x.Id == id);
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> filter)
     {
-        var result = await _repository.Search(filter, x => x.IsOwner);
+        var result = await _repository.Search(filter);
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<IOwner>> Update(IOwner entity)
     {
-        var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
+        var existingPersonResult = await _repository.Find(x => x.Person.TaxDocument == entity.Person.TaxDocument);
+
+        if (!existingPersonResult.Success)
+            return ToEntityResult(existingPersonResult);
+
+        if (existingPersonResult.Content == null)
+            return ToEntityResult(new ServiceResult<IOwner>(new ServiceError("Error", "Internal server Error", 500)));
+
+        var taxDocumentAvailable = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
@@ -75,23 +73,13 @@ public class OwnerManager : IOwnerManager
             return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsOwner);
-
-        if (existingPersonResult.Success && existingPersonResult.Content != null)
-        {
-            var updatedPerson = existingPersonResult.Content;
-            CopyToPerson(entity, updatedPerson);
-
-            var updateResult = await _repository.Update(updatedPerson);
-            return ToEntityResult(updateResult);
-        }
-
-        return ToEntityResult(existingPersonResult);
+        var updateResult = await _repository.Update(entity);
+        return ToEntityResult(updateResult);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
     {
-        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsOwner);
+        var entities = await _repository.Search(x => x.Person.TaxDocument == taxDocument);
 
         if (!entities.Success || entities.Content == null)
         {
@@ -116,33 +104,7 @@ public class OwnerManager : IOwnerManager
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(IOwner entity)
-    {
-        return new Person
-        {
-            IsOwner = true,
-            Id = entity.Id,
-            TaxDocument = entity.TaxDocument,
-            Address = entity.Address,
-            BirthDate = entity.BirthDate,
-            FirstName = entity.FirstName,
-            LastName = entity.LastName,
-            Mobile = entity.Mobile,
-        };
-    }
-
-    private void CopyToPerson(IOwner entity, Person person)
-    {
-        person.IsOwner = true;
-        person.TaxDocument = entity.TaxDocument;
-        person.Address = entity.Address;
-        person.BirthDate = entity.BirthDate;
-        person.FirstName = entity.FirstName;
-        person.LastName = entity.LastName;
-        person.Mobile = entity.Mobile;
-    }
-
-    private ServiceResult<IOwner> ToEntityResult(ServiceResult<Person> result)
+    private ServiceResult<IOwner> ToEntityResult(ServiceResult<IOwner> result)
     {
         if (result.Success)
         {
@@ -154,7 +116,7 @@ public class OwnerManager : IOwnerManager
         return new ServiceResult<IOwner>(result.Error);
     }
 
-    private ServiceResult<List<IOwner>> ToEntityResult(ServiceResult<List<Person>> result)
+    private ServiceResult<List<IOwner>> ToEntityResult(ServiceResult<List<IOwner>> result)
     {
         if (result.Success)
         {

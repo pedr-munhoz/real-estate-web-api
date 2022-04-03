@@ -26,7 +26,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
-builder.Services.AddTransient<IRepository<Person>, ListRepository<Person>>();
+builder.Services.AddTransient<IRepository<IOwner>, ListRepository<IOwner>>();
+builder.Services.AddTransient<IRepository<IRealtor>, ListRepository<IRealtor>>();
+builder.Services.AddTransient<IRepository<ITenant>, ListRepository<ITenant>>();
 builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEstate>>();
 builder.Services.AddTransient<IRepository<IRental>, ListRepository<IRental>>();
 

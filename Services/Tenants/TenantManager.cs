@@ -1,19 +1,20 @@
-using real_estate_web_api.Models.Entities.People;
+
+using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Services.Tenants;
 
 public class TenantManager : ITenantManager
 {
-    private readonly IRepository<Person> _repository;
+    private readonly IRepository<ITenant> _repository;
 
-    public TenantManager(IRepository<Person> repository)
+    public TenantManager(IRepository<ITenant> repository)
     {
         _repository = repository;
     }
 
     public async Task<ServiceResult<ITenant>> Create(ITenant entity)
     {
-        var taxDocumentAvailableResult = await CheckTaxDocument(entity.TaxDocument);
+        var taxDocumentAvailableResult = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailableResult.Success)
         {
@@ -21,18 +22,7 @@ public class TenantManager : ITenantManager
             return new ServiceResult<ITenant>(taxDocumentAvailableResult.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsTenant);
-
-        if (existingPersonResult.Success && existingPersonResult.Content != null)
-        {
-            var updatedPerson = existingPersonResult.Content;
-            CopyToPerson(entity, updatedPerson);
-
-            var updateResult = await _repository.Update(updatedPerson);
-            return ToEntityResult(updateResult);
-        }
-
-        var result = await _repository.Create(ToPerson(entity));
+        var result = await _repository.Create(entity);
 
         return ToEntityResult(result);
     }
@@ -46,28 +36,36 @@ public class TenantManager : ITenantManager
 
     public async Task<ServiceResult<List<ITenant>>> Retrieve()
     {
-        var result = await _repository.Search(x => x.IsTenant);
+        var result = await _repository.Retrieve();
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<ITenant>> Retrieve(string id)
     {
-        var result = await _repository.Find(x => x.IsTenant && x.Id == id);
+        var result = await _repository.Find(x => x.Id == id);
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<List<ITenant>>> Search(Func<ITenant, bool> filter)
     {
-        var result = await _repository.Search(filter, x => x.IsTenant);
+        var result = await _repository.Search(filter);
 
         return ToEntityResult(result);
     }
 
     public async Task<ServiceResult<ITenant>> Update(ITenant entity)
     {
-        var taxDocumentAvailable = await CheckTaxDocument(entity.TaxDocument);
+        var existingPersonResult = await _repository.Find(x => x.Person.TaxDocument == entity.Person.TaxDocument);
+
+        if (!existingPersonResult.Success)
+            return ToEntityResult(existingPersonResult);
+
+        if (existingPersonResult.Content == null)
+            return ToEntityResult(new ServiceResult<ITenant>(new ServiceError("Error", "Internal server Error", 500)));
+
+        var taxDocumentAvailable = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
@@ -75,23 +73,13 @@ public class TenantManager : ITenantManager
             return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
         }
 
-        var existingPersonResult = await _repository.Find(x => x.TaxDocument == entity.TaxDocument && !x.IsTenant);
-
-        if (existingPersonResult.Success && existingPersonResult.Content != null)
-        {
-            var updatedPerson = existingPersonResult.Content;
-            CopyToPerson(entity, updatedPerson);
-
-            var updateResult = await _repository.Update(updatedPerson);
-            return ToEntityResult(updateResult);
-        }
-
-        return ToEntityResult(existingPersonResult);
+        var updateResult = await _repository.Update(entity);
+        return ToEntityResult(updateResult);
     }
 
     private async Task<ServiceResult> CheckTaxDocument(string taxDocument)
     {
-        var entities = await _repository.Search(x => x.TaxDocument == taxDocument && x.IsTenant);
+        var entities = await _repository.Search(x => x.Person.TaxDocument == taxDocument);
 
         if (!entities.Success || entities.Content == null)
         {
@@ -116,37 +104,7 @@ public class TenantManager : ITenantManager
         return new ServiceResult(success: true);
     }
 
-    private Person ToPerson(ITenant entity)
-    {
-        return new Person
-        {
-            IsTenant = true,
-            Id = entity.Id,
-            TaxDocument = entity.TaxDocument,
-            Address = entity.Address,
-            BirthDate = entity.BirthDate,
-            FirstName = entity.FirstName,
-            LastName = entity.LastName,
-            Mobile = entity.Mobile,
-            Income = entity.Income,
-            InterestedInBuying = entity.InterestedInBuying,
-        };
-    }
-
-    private void CopyToPerson(ITenant entity, Person person)
-    {
-        person.IsTenant = true;
-        person.TaxDocument = entity.TaxDocument;
-        person.Address = entity.Address;
-        person.BirthDate = entity.BirthDate;
-        person.FirstName = entity.FirstName;
-        person.LastName = entity.LastName;
-        person.Mobile = entity.Mobile;
-        person.Income = entity.Income;
-        person.InterestedInBuying = entity.InterestedInBuying;
-    }
-
-    private ServiceResult<ITenant> ToEntityResult(ServiceResult<Person> result)
+    private ServiceResult<ITenant> ToEntityResult(ServiceResult<ITenant> result)
     {
         if (result.Success)
         {
@@ -158,7 +116,7 @@ public class TenantManager : ITenantManager
         return new ServiceResult<ITenant>(result.Error);
     }
 
-    private ServiceResult<List<ITenant>> ToEntityResult(ServiceResult<List<Person>> result)
+    private ServiceResult<List<ITenant>> ToEntityResult(ServiceResult<List<ITenant>> result)
     {
         if (result.Success)
         {

@@ -19,8 +19,8 @@ public class OwnerController : StandardController<IOwner, OwnerViewModel, OwnerR
     public async Task<ActionResult> Search([FromQuery] string? taxDocument, string? lastName)
     {
         var result = await _manager.Search(x =>
-            (x.TaxDocument == taxDocument || taxDocument == null) &&
-            (x.LastName == lastName || lastName == null)
+            (x.Person.TaxDocument == taxDocument || taxDocument == null) &&
+            (x.Person.LastName == lastName || lastName == null)
         );
 
         if (result.Success && result.Content != null)
