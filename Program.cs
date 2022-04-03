@@ -1,6 +1,9 @@
+using real_estate_web_api.Models.Entities.Owners;
 using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Entities.RealEstates;
+using real_estate_web_api.Models.Entities.Realtors;
 using real_estate_web_api.Models.Entities.Rentals;
+using real_estate_web_api.Models.Entities.Tenants;
 using real_estate_web_api.Services;
 using real_estate_web_api.Services.Owners;
 using real_estate_web_api.Services.RealEstates;
@@ -36,13 +39,13 @@ builder.Services.AddTransient<IRentalManager, RentalManager>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
+// }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

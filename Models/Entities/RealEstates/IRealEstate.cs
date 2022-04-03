@@ -1,4 +1,6 @@
+using real_estate_web_api.Models.Entities.Owners;
 using real_estate_web_api.Models.Entities.People;
+using real_estate_web_api.Models.Entities.Realtors;
 using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.Entities.RealEstates;
