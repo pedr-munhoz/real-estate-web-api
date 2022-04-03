@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Linq.Expressions;
 using real_estate_web_api.Models.Entities;
 
 namespace real_estate_web_api.Services;
@@ -25,13 +27,24 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
             return new ServiceResult(false, error);
         }
 
         _data.Remove(entity);
 
         return new ServiceResult(true);
+    }
+
+    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
+    {
+        await Task.CompletedTask;
+
+        var result = secondaryFilter == null
+            ? new ServiceResult<List<T>>(_data.Where(filter).ToList())
+            : new ServiceResult<List<T>>(_data.Where(filter).Where(secondaryFilter).ToList());
+
+        return result;
     }
 
     public async Task<ServiceResult<List<T>>> Retrieve()
@@ -49,7 +62,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {id}", 404);
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
             return new ServiceResult<T>(error);
         }
 
@@ -64,7 +77,7 @@ public class ListRepository<T> : IRepository<T>
 
         if (entity == null)
         {
-            var error = new ServiceError("not found", $"entity not found for id: {newEntity.Id}", 404);
+            var error = new ServiceError("Entity not found", $"No entity could be located for id: {newEntity.Id}", 404);
             return new ServiceResult<T>(error);
         }
 
@@ -72,5 +85,19 @@ public class ListRepository<T> : IRepository<T>
         _data.Add(newEntity);
 
         return new ServiceResult<T>(newEntity);
+    }
+
+    public async Task<ServiceResult<T>> Find(Func<T, bool> expression)
+    {
+        await Task.CompletedTask;
+
+        var entity = _data.Where(expression).FirstOrDefault();
+        if (entity == null)
+        {
+            var error = new ServiceError("Entity not found", $"No entity could be located", 404);
+            return new ServiceResult<T>(error);
+        }
+
+        return new ServiceResult<T>(entity);
     }
 }
