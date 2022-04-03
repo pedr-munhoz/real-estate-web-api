@@ -4,7 +4,7 @@ namespace real_estate_web_api.Models.Entities.Tenants;
 
 public interface ITenant : IEntityModel
 {
-    Person Person { get; set; }
+    IPerson Person { get; set; }
     double Income { get; set; }
     bool? InterestedInBuying { get; set; }
 }
