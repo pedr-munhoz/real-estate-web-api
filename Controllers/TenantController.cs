@@ -6,7 +6,7 @@ using real_estate_web_api.Services.Tenants;
 
 namespace real_estate_web_api.Controllers;
 
-public class TenantController : StandardController<ITenant, TenantViewModel, TenantResult>
+public class TenantController : StandardController<Tenant, TenantViewModel, TenantResult>
 {
     public TenantController(ITenantManager manager) : base(manager)
     {

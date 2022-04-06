@@ -5,7 +5,7 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class TenantViewModel : ViewModel<ITenant>
+public class TenantViewModel : ViewModel<Tenant>
 {
     [Required]
     public PersonViewModel Person { get; set; } = new PersonViewModel();
@@ -14,7 +14,7 @@ public class TenantViewModel : ViewModel<ITenant>
     public double Income { get; set; }
     public bool? InterestedInBuying { get; set; }
 
-    public override ITenant Map()
+    public override Tenant Map()
     {
         return new Tenant
         {
