@@ -39,11 +39,11 @@ namespace real_estate_web_api.Models.Results
         public double? RentAmount { get; set; }
 
         [JsonIgnore]
-        public IOwner Owner { get; set; } = new Owner();
+        public Owner Owner { get; set; } = new Owner();
         public long? OwnerId { get; set; }
 
         [JsonIgnore]
-        public IRealtor Realtor { get; set; } = new Realtor();
+        public Realtor Realtor { get; set; } = new Realtor();
         public long? RealtorId { get; set; }
 
         public override Result<IRealEstate> Instantiate(IRealEstate entity)

@@ -16,6 +16,6 @@ public class RealEstate : EntityModel, IRealEstate
     public double? SaleAmount { get; set; }
     public bool RentAvailable { get; set; }
     public double? RentAmount { get; set; }
-    public IOwner Owner { get; set; } = new Owner();
-    public IRealtor Realtor { get; set; } = new Realtor();
+    public Owner Owner { get; set; } = new Owner();
+    public Realtor Realtor { get; set; } = new Realtor();
 }

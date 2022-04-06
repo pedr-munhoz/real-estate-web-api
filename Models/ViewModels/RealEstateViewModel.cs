@@ -42,13 +42,13 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
     public long OwnerId { get; set; }
 
     [JsonIgnore]
-    public IOwner Owner { get; set; } = new Owner();
+    public Owner Owner { get; set; } = new Owner();
 
     [Required]
     public long RealtorId { get; set; }
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Realtor();
+    public Realtor Realtor { get; set; } = new Realtor();
 
     public override RealEstate Map()
     {

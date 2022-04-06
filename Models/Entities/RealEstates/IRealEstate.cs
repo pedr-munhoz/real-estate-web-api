@@ -16,6 +16,6 @@ public interface IRealEstate : IEntityModel
     double? SaleAmount { get; set; }
     bool RentAvailable { get; set; }
     double? RentAmount { get; set; }
-    IOwner Owner { get; set; }
-    IRealtor Realtor { get; set; }
+    Owner Owner { get; set; }
+    Realtor Realtor { get; set; }
 }
