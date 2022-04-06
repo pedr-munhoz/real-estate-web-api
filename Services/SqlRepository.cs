@@ -14,36 +14,90 @@ public class SqlRepository<T> : IRepository<T>
         _dbContext = dbContext;
     }
 
-    public Task<ServiceResult<T>> Create(T entity)
+    public async Task<ServiceResult<T>> Create(T entity)
     {
-        throw new NotImplementedException();
+        await _dbContext.Set<T>().AddAsync(entity);
+
+        await _dbContext.SaveChangesAsync();
+
+        return new ServiceResult<T>(entity);
     }
 
-    public Task<ServiceResult> Delete(long id)
+    public async Task<ServiceResult> Delete(long id)
     {
-        throw new NotImplementedException();
+        var entity = await _dbContext.Set<T>()
+            .Where(x => x.InactivatedAt == null)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (entity == null)
+        {
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
+            return new ServiceResult(false, error);
+        }
+
+        entity.InactivatedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+
+        return new ServiceResult(true);
     }
 
-    public Task<ServiceResult<T>> Find(Func<T, bool> expression)
+    public async Task<ServiceResult<T>> Find(Func<T, bool> expression)
     {
-        throw new NotImplementedException();
+        var entities = await _dbContext.Set<T>()
+            .Where(x => x.InactivatedAt == null)
+            .ToListAsync();
+
+        var entity = entities
+            .Where(expression)
+            .FirstOrDefault();
+
+        if (entity == null)
+        {
+            var error = new ServiceError("Entity not found", $"No entity could be located", 404);
+            return new ServiceResult<T>(error);
+        }
+
+        return new ServiceResult<T>(entity);
     }
 
     public async Task<ServiceResult<List<T>>> Retrieve()
     {
-        var entities = await _dbContext.Set<T>().Where(x => x.InactivatedAt == null).ToListAsync();
+        var entities = await _dbContext.Set<T>()
+            .Where(x => x.InactivatedAt == null)
+            .ToListAsync();
 
         return new ServiceResult<List<T>>(entities);
     }
 
-    public Task<ServiceResult<T>> Retrieve(long id)
+    public async Task<ServiceResult<T>> Retrieve(long id)
     {
-        throw new NotImplementedException();
+        var entity = await _dbContext.Set<T>()
+            .Where(x => x.InactivatedAt == null)
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (entity == null)
+        {
+            var error = new ServiceError($"{typeof(T).Name} not found", $"No {typeof(T).Name} could be located for id: {id}", 404);
+            return new ServiceResult<T>(error);
+        }
+
+        return new ServiceResult<T>(entity);
     }
 
-    public Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
+    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
     {
-        throw new NotImplementedException();
+        var entities = await _dbContext.Set<T>()
+            .Where(x => x.InactivatedAt == null)
+            .ToListAsync();
+
+        var searchResult = secondaryFilter == null
+            ? entities.Where(filter).ToList()
+            : entities.Where(filter).Where(secondaryFilter).ToList();
+
+        return new ServiceResult<List<T>>(searchResult);
     }
 
     public Task<ServiceResult<T>> Update(T entity)
