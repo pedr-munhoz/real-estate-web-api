@@ -1,6 +1,6 @@
 namespace real_estate_web_api.Models.Entities.People;
 
-public class Person : EntityModel, IPerson
+public class Person : EntityModel
 {
     public string TaxDocument { get; set; } = "";
     public string Address { get; set; } = "";
