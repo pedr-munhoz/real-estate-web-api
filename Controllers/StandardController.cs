@@ -8,16 +8,15 @@ namespace real_estate_web_api.Controllers;
 
 [ApiController]
 [Route("api/v2/[controller]")]
-public abstract class StandardController<TEntity, TModel, TResult> : ControllerBase
-    where TEntity : IEntityModel
+public abstract class StandardController<TEntity, TModel, TResult> : ControllerBase, IController<TEntity, TModel> where TEntity : IEntityModel
     where TModel : ViewModel<TEntity>, new()
     where TResult : Result<TEntity>, new()
 {
-    private readonly IRepository<TEntity> _repository;
+    protected readonly IManager<TEntity> _manager;
 
-    protected StandardController(IRepository<TEntity> repository)
+    protected StandardController(IManager<TEntity> manager)
     {
-        _repository = repository;
+        _manager = manager;
     }
 
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -27,7 +26,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("")]
     public async Task<ActionResult> Create([FromBody] TModel model)
     {
-        var result = await _repository.Create(model.Map());
+        var result = await _manager.Create(model.Map());
 
         if (result.Success && result.Content != null)
             return Created($"/{result.Content.Id}", new TResult().Instantiate(result.Content));
@@ -40,7 +39,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("")]
     public async Task<ActionResult> Retrieve()
     {
-        var result = await _repository.Retrieve();
+        var result = await _manager.Retrieve();
 
         if (result.Success && result.Content != null)
             return Ok(result.Content.Select(x => new TResult().Instantiate(x)).ToList());
@@ -54,7 +53,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("{id}")]
     public async Task<ActionResult> RetrieveById([FromRoute] long id)
     {
-        var result = await _repository.Retrieve(id);
+        var result = await _manager.Retrieve(id);
 
         if (result.Success && result.Content != null)
             return Ok(new TResult().Instantiate(result.Content));
@@ -69,7 +68,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("")]
     public async Task<ActionResult> Update([FromBody] TModel model)
     {
-        var result = await _repository.Update(model.Map());
+        var result = await _manager.Update(model.Map());
 
         if (result.Success && result.Content != null)
             return Ok(new TResult().Instantiate(result.Content));
@@ -85,7 +84,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [Route("{id}")]
     public async Task<ActionResult> Delete([FromRoute] long id)
     {
-        var result = await _repository.Delete(id);
+        var result = await _manager.Delete(id);
 
         if (result.Success)
             return NoContent();

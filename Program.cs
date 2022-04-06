@@ -7,6 +7,11 @@ using real_estate_web_api.Models.Entities.Realtors;
 using real_estate_web_api.Models.Entities.Rentals;
 using real_estate_web_api.Models.Entities.Tenants;
 using real_estate_web_api.Services;
+using real_estate_web_api.Services.Owners;
+using real_estate_web_api.Services.RealEstates;
+using real_estate_web_api.Services.Realtors;
+using real_estate_web_api.Services.Rentals;
+using real_estate_web_api.Services.Tenants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +38,13 @@ builder.Services.AddTransient<IRepository<IOwner>, ListRepository<IOwner>>();
 builder.Services.AddTransient<IRepository<IRealtor>, ListRepository<IRealtor>>();
 builder.Services.AddTransient<IRepository<ITenant>, ListRepository<ITenant>>();
 builder.Services.AddTransient<IRepository<IRealEstate>, ListRepository<IRealEstate>>();
-builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
+builder.Services.AddTransient<IRepository<IRental>, ListRepository<IRental>>();
+
+builder.Services.AddTransient<IOwnerManager, OwnerManager>();
+builder.Services.AddTransient<IRealtorManager, RealtorManager>();
+builder.Services.AddTransient<ITenantManager, TenantManager>();
+builder.Services.AddTransient<IRealEstateManager, RealEstateManager>();
+builder.Services.AddTransient<IRentalManager, RentalManager>();
 
 var app = builder.Build();
 
