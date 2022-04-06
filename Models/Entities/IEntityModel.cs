@@ -4,4 +4,5 @@ public interface IEntityModel
 {
     long Id { get; set; }
     DateTime CreatedAt { get; set; }
+    DateTime? InactivatedAt { get; set; }
 }
