@@ -7,7 +7,7 @@ public interface IRepository<T>
 {
     Task<ServiceResult<T>> Create(T entity);
     Task<ServiceResult<List<T>>> Retrieve();
-    Task<ServiceResult<T>> Retrieve(string id);
+    Task<ServiceResult<T>> Retrieve(long id);
     Task<ServiceResult<T>> Update(T entity);
-    Task<ServiceResult> Delete(string id);
+    Task<ServiceResult> Delete(long id);
 }

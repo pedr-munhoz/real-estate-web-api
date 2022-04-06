@@ -29,15 +29,15 @@ public class RentalResult : Result<IRental>, IRental
 
     [JsonIgnore]
     public IRealEstate RealEstate { get; set; } = new RealEstate();
-    public string? RealEstateId { get; set; }
+    public long? RealEstateId { get; set; }
 
     [JsonIgnore]
     public IRealtor Realtor { get; set; } = new Realtor();
-    public string? RealtorId { get; set; }
+    public long? RealtorId { get; set; }
 
     [JsonIgnore]
     public ITenant Tenant { get; set; } = new Tenant();
-    public string? TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public override Result<IRental> Instantiate(IRental entity)
         => new RentalResult(entity);

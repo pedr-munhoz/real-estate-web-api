@@ -40,11 +40,11 @@ namespace real_estate_web_api.Models.Results
 
         [JsonIgnore]
         public IOwner Owner { get; set; } = new Owner();
-        public string? OwnerId { get; set; }
+        public long? OwnerId { get; set; }
 
         [JsonIgnore]
         public IRealtor Realtor { get; set; } = new Realtor();
-        public string? RealtorId { get; set; }
+        public long? RealtorId { get; set; }
 
         public override Result<IRealEstate> Instantiate(IRealEstate entity)
             => new RealEstateResult(entity);

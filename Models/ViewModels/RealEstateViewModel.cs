@@ -39,13 +39,13 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
     public bool RentAvailable { get; set; }
 
     [Required]
-    public string OwnerId { get; set; } = "";
+    public long OwnerId { get; set; }
 
     [JsonIgnore]
     public IOwner Owner { get; set; } = new Owner();
 
     [Required]
-    public string RealtorId { get; set; } = "";
+    public long RealtorId { get; set; }
 
     [JsonIgnore]
     public IRealtor Realtor { get; set; } = new Realtor();

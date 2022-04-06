@@ -4,7 +4,7 @@ public abstract class EntityModel : IEntityModel
 {
     public EntityModel() { }
 
-    public virtual string Id { get; set; } = "";
+    public virtual long Id { get; set; }
     public virtual DateTime CreatedAt { get; set; } = DateTime.Now;
     public virtual DateTime? InactivatedAt { get; set; }
 }

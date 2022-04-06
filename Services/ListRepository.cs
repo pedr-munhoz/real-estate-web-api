@@ -11,13 +11,13 @@ public class ListRepository<T> : IRepository<T>
     {
         await Task.CompletedTask;
 
-        entity.Id = Guid.NewGuid().ToString();
+        entity.Id = _data.Count;
         _data.Add(entity);
 
         return new ServiceResult<T>(entity);
     }
 
-    public async Task<ServiceResult> Delete(string id)
+    public async Task<ServiceResult> Delete(long id)
     {
         await Task.CompletedTask;
 
@@ -41,7 +41,7 @@ public class ListRepository<T> : IRepository<T>
         return new ServiceResult<List<T>>(_data);
     }
 
-    public async Task<ServiceResult<T>> Retrieve(string id)
+    public async Task<ServiceResult<T>> Retrieve(long id)
     {
         await Task.CompletedTask;
 
