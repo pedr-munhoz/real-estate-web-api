@@ -9,7 +9,7 @@ namespace real_estate_web_api.Controllers;
 
 public class OwnerController : StandardController<Owner, OwnerViewModel, OwnerResult>
 {
-    public OwnerController(OwnerManager manager) : base(manager)
+    public OwnerController(IOwnerManager manager) : base(manager)
     {
     }
 
