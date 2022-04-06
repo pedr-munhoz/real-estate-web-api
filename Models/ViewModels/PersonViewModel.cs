@@ -23,7 +23,7 @@ namespace real_estate_web_api.Models.ViewModels
         [Required]
         public string Mobile { get; set; } = "";
 
-        public override IPerson Map()
+        public override Person Map()
         {
             return new Person
             {
