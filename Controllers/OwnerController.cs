@@ -7,9 +7,9 @@ using real_estate_web_api.Services.Owners;
 
 namespace real_estate_web_api.Controllers;
 
-public class OwnerController : StandardController<IOwner, OwnerViewModel, OwnerResult>
+public class OwnerController : StandardController<Owner, OwnerViewModel, OwnerResult>
 {
-    public OwnerController(IOwnerManager manager) : base(manager)
+    public OwnerController(OwnerManager manager) : base(manager)
     {
     }
 

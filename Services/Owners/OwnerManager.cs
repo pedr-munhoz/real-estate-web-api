@@ -5,21 +5,21 @@ namespace real_estate_web_api.Services.Owners;
 
 public class OwnerManager : IOwnerManager
 {
-    private readonly IRepository<IOwner> _repository;
+    private readonly IRepository<Owner> _repository;
 
-    public OwnerManager(IRepository<IOwner> repository)
+    public OwnerManager(IRepository<Owner> repository)
     {
         _repository = repository;
     }
 
-    public async Task<ServiceResult<IOwner>> Create(IOwner entity)
+    public async Task<ServiceResult<Owner>> Create(Owner entity)
     {
         var taxDocumentAvailableResult = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailableResult.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailableResult.Error);
-            return new ServiceResult<IOwner>(taxDocumentAvailableResult.Error);
+            return new ServiceResult<Owner>(taxDocumentAvailableResult.Error);
         }
 
         var result = await _repository.Create(entity);
@@ -34,28 +34,28 @@ public class OwnerManager : IOwnerManager
         return result;
     }
 
-    public async Task<ServiceResult<List<IOwner>>> Retrieve()
+    public async Task<ServiceResult<List<Owner>>> Retrieve()
     {
         var result = await _repository.Retrieve();
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<IOwner>> Retrieve(long id)
+    public async Task<ServiceResult<Owner>> Retrieve(long id)
     {
         var result = await _repository.Find(x => x.Id == id);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<List<IOwner>>> Search(Func<IOwner, bool> filter)
+    public async Task<ServiceResult<List<Owner>>> Search(Func<Owner, bool> filter)
     {
         var result = await _repository.Search(filter);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<IOwner>> Update(IOwner entity)
+    public async Task<ServiceResult<Owner>> Update(Owner entity)
     {
         var existingPersonResult = await _repository.Find(x => x.Person.TaxDocument == entity.Person.TaxDocument);
 
@@ -63,14 +63,14 @@ public class OwnerManager : IOwnerManager
             return ToEntityResult(existingPersonResult);
 
         if (existingPersonResult.Content == null)
-            return ToEntityResult(new ServiceResult<IOwner>(new ServiceError("Error", "Internal server Error", 500)));
+            return ToEntityResult(new ServiceResult<Owner>(new ServiceError("Error", "Internal server Error", 500)));
 
         var taxDocumentAvailable = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<IOwner>(taxDocumentAvailable.Error);
+            return new ServiceResult<Owner>(taxDocumentAvailable.Error);
         }
 
         var updateResult = await _repository.Update(entity);
@@ -104,27 +104,27 @@ public class OwnerManager : IOwnerManager
         return new ServiceResult(success: true);
     }
 
-    private ServiceResult<IOwner> ToEntityResult(ServiceResult<IOwner> result)
+    private ServiceResult<Owner> ToEntityResult(ServiceResult<Owner> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<IOwner>(result.Content);
+            return new ServiceResult<Owner>(result.Content);
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<IOwner>(result.Error);
+        return new ServiceResult<Owner>(result.Error);
     }
 
-    private ServiceResult<List<IOwner>> ToEntityResult(ServiceResult<List<IOwner>> result)
+    private ServiceResult<List<Owner>> ToEntityResult(ServiceResult<List<Owner>> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<List<IOwner>>(new List<IOwner>(result.Content));
+            return new ServiceResult<List<Owner>>(new List<Owner>(result.Content));
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<List<IOwner>>(result.Error);
+        return new ServiceResult<List<Owner>>(result.Error);
     }
 }
