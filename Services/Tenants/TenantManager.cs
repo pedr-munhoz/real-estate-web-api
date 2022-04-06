@@ -27,7 +27,7 @@ public class TenantManager : ITenantManager
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult> Delete(string id)
+    public async Task<ServiceResult> Delete(long id)
     {
         var result = await _repository.Delete(id);
 
@@ -41,7 +41,7 @@ public class TenantManager : ITenantManager
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<ITenant>> Retrieve(string id)
+    public async Task<ServiceResult<ITenant>> Retrieve(long id)
     {
         var result = await _repository.Find(x => x.Id == id);
 

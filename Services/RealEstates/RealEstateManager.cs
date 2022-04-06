@@ -46,7 +46,7 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         return new ServiceResult<IRealEstate>(new RealEstate());
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckOwner(string id)
+    private async Task<ServiceResult<IRealEstate>> CheckOwner(long id)
     {
         var exists = await _ownerManager.Retrieve(id);
 
@@ -63,7 +63,7 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         return new ServiceResult<IRealEstate>(error);
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckRealtor(string id)
+    private async Task<ServiceResult<IRealEstate>> CheckRealtor(long id)
     {
         var exists = await _realtorManager.Retrieve(id);
 

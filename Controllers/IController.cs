@@ -9,8 +9,8 @@ public interface IController<TEntity, TModel>
     where TModel : ViewModel<TEntity>, new()
 {
     Task<ActionResult> Create([FromBody] TModel model);
-    Task<ActionResult> Delete([FromRoute] string id);
+    Task<ActionResult> Delete([FromRoute] long id);
     Task<ActionResult> Retrieve();
-    Task<ActionResult> RetrieveById([FromRoute] string id);
+    Task<ActionResult> RetrieveById([FromRoute] long id);
     Task<ActionResult> Update([FromBody] TModel model);
 }

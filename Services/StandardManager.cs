@@ -18,7 +18,7 @@ public class StandardManager<T> : IManager<T>
         return result;
     }
 
-    public virtual async Task<ServiceResult> Delete(string id)
+    public virtual async Task<ServiceResult> Delete(long id)
     {
         var result = await _repository.Delete(id);
 
@@ -32,7 +32,7 @@ public class StandardManager<T> : IManager<T>
         return result;
     }
 
-    public virtual async Task<ServiceResult<T>> Retrieve(string id)
+    public virtual async Task<ServiceResult<T>> Retrieve(long id)
     {
         var result = await _repository.Retrieve(id);
 
