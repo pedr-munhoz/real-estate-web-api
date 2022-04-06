@@ -5,7 +5,7 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.Entities.Rentals;
 
-public class Rental : EntityModel, IRental
+public class Rental : EntityModel
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

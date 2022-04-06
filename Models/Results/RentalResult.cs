@@ -7,13 +7,13 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.Results;
 
-public class RentalResult : Result<IRental>, IRental
+public class RentalResult : Result<Rental>
 {
     public RentalResult()
     {
     }
 
-    public RentalResult(IRental entity) : base(entity)
+    public RentalResult(Rental entity) : base(entity)
     {
         StartDate = entity.StartDate;
         EndDate = entity.EndDate;
@@ -39,6 +39,6 @@ public class RentalResult : Result<IRental>, IRental
     public Tenant Tenant { get; set; } = new Tenant();
     public long? TenantId { get; set; }
 
-    public override Result<IRental> Instantiate(IRental entity)
+    public override Result<Rental> Instantiate(Rental entity)
         => new RentalResult(entity);
 }

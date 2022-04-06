@@ -6,14 +6,14 @@ using real_estate_web_api.Services.Tenants;
 
 namespace real_estate_web_api.Services.Rentals;
 
-public class RentalManager : StandardManager<IRental>, IRentalManager
+public class RentalManager : StandardManager<Rental>, IRentalManager
 {
     private readonly IRealEstateManager _realEstateManager;
     private readonly IRealtorManager _realtorManager;
     private readonly ITenantManager _tenantManager;
 
     public RentalManager(
-        IRepository<IRental> repository,
+        IRepository<Rental> repository,
         IRealEstateManager realEstateManager,
         IRealtorManager realtorManager,
         ITenantManager tentantManager)
@@ -24,7 +24,7 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         _tenantManager = tentantManager;
     }
 
-    public override async Task<ServiceResult<IRental>> Create(IRental entity)
+    public override async Task<ServiceResult<Rental>> Create(Rental entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -33,7 +33,7 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         return await base.Create(entity);
     }
 
-    public override async Task<ServiceResult<IRental>> Update(IRental entity)
+    public override async Task<ServiceResult<Rental>> Update(Rental entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -42,7 +42,7 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         return await base.Update(entity);
     }
 
-    private async Task<ServiceResult<IRental>> CheckReferences(IRental entity)
+    private async Task<ServiceResult<Rental>> CheckReferences(Rental entity)
     {
         var validRealEstateResult = await CheckRealEstate(entity.RealEstate.Id);
         if (!validRealEstateResult.Success)
@@ -56,16 +56,16 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         if (!validTenantResult.Success)
             return validTenantResult;
 
-        return new ServiceResult<IRental>(new Rental());
+        return new ServiceResult<Rental>(new Rental());
     }
 
-    private async Task<ServiceResult<IRental>> CheckRealEstate(long id)
+    private async Task<ServiceResult<Rental>> CheckRealEstate(long id)
     {
         var exists = await _realEstateManager.Retrieve(id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
@@ -73,16 +73,16 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
             $"No RealEstate could be located with id: {id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 
-    private async Task<ServiceResult<IRental>> CheckRealtor(long id)
+    private async Task<ServiceResult<Rental>> CheckRealtor(long id)
     {
         var exists = await _realtorManager.Retrieve(id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
@@ -90,16 +90,16 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
             $"No Realtor could be located with id: {id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 
-    private async Task<ServiceResult<IRental>> CheckTenant(long id)
+    private async Task<ServiceResult<Rental>> CheckTenant(long id)
     {
         var exists = await _tenantManager.Retrieve(id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
@@ -107,6 +107,6 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
             $"No tenant could be located with id: {id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 }

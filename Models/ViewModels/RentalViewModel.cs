@@ -8,7 +8,7 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RentalViewModel : ViewModel<IRental>, IRental
+public class RentalViewModel : ViewModel<Rental>
 {
     [Required]
     public long RealEstateId { get; set; }
