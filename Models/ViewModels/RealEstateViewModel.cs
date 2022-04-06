@@ -8,7 +8,7 @@ using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
+public class RealEstateViewModel : ViewModel<RealEstate>
 {
     [Required]
     public string Address { get; set; } = "";

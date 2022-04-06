@@ -4,18 +4,18 @@ using real_estate_web_api.Services.Realtors;
 
 namespace real_estate_web_api.Services.RealEstates;
 
-public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManager
+public class RealEstateManager : StandardManager<RealEstate>, IRealEstateManager
 {
     private readonly IOwnerManager _ownerManager;
     private readonly IRealtorManager _realtorManager;
-    public RealEstateManager(IRepository<IRealEstate> repository, IOwnerManager ownerManager, IRealtorManager realtorManager)
+    public RealEstateManager(IRepository<RealEstate> repository, IOwnerManager ownerManager, IRealtorManager realtorManager)
         : base(repository)
     {
         _ownerManager = ownerManager;
         _realtorManager = realtorManager;
     }
 
-    public override async Task<ServiceResult<IRealEstate>> Create(IRealEstate entity)
+    public override async Task<ServiceResult<RealEstate>> Create(RealEstate entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -24,7 +24,7 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         return await base.Create(entity);
     }
 
-    public override async Task<ServiceResult<IRealEstate>> Update(IRealEstate entity)
+    public override async Task<ServiceResult<RealEstate>> Update(RealEstate entity)
     {
         var validOwnerResult = await CheckOwner(entity.Owner.Id);
         if (!validOwnerResult.Success)
@@ -33,7 +33,7 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         return await base.Update(entity);
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckReferences(IRealEstate entity)
+    private async Task<ServiceResult<RealEstate>> CheckReferences(RealEstate entity)
     {
         var validOwnerResult = await CheckOwner(entity.Owner.Id);
         if (!validOwnerResult.Success)
@@ -43,16 +43,16 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         if (!validRealtorResult.Success)
             return validRealtorResult;
 
-        return new ServiceResult<IRealEstate>(new RealEstate());
+        return new ServiceResult<RealEstate>(new RealEstate());
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckOwner(long id)
+    private async Task<ServiceResult<RealEstate>> CheckOwner(long id)
     {
         var exists = await _ownerManager.Retrieve(id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRealEstate>(new RealEstate());
+            return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
@@ -60,16 +60,16 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
             $"No Owner could be located with id: {id}",
             404);
 
-        return new ServiceResult<IRealEstate>(error);
+        return new ServiceResult<RealEstate>(error);
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckRealtor(long id)
+    private async Task<ServiceResult<RealEstate>> CheckRealtor(long id)
     {
         var exists = await _realtorManager.Retrieve(id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRealEstate>(new RealEstate());
+            return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
@@ -77,6 +77,6 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
             $"No Realtor could be located with id: {id}",
             404);
 
-        return new ServiceResult<IRealEstate>(error);
+        return new ServiceResult<RealEstate>(error);
     }
 }

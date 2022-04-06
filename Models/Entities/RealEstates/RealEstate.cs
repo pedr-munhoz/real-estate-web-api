@@ -5,7 +5,7 @@ using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.Entities.RealEstates;
 
-public class RealEstate : EntityModel, IRealEstate
+public class RealEstate : EntityModel
 {
     public string Address { get; set; } = "";
     public BuildingType Type { get; set; }
