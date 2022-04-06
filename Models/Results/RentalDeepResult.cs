@@ -25,9 +25,9 @@ public class RentalDeepResult : Result<IRental>, IRental
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public double MonthlyAmount { get; set; }
-    public IRealEstate RealEstate { get; set; } = new RealEstate();
-    public IRealtor Realtor { get; set; } = new Realtor();
-    public ITenant Tenant { get; set; } = new Tenant();
+    public RealEstate RealEstate { get; set; } = new RealEstate();
+    public Realtor Realtor { get; set; } = new Realtor();
+    public Tenant Tenant { get; set; } = new Tenant();
 
     public override Result<IRental> Instantiate(IRental entity)
         => new RentalDeepResult(entity);

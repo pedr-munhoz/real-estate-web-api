@@ -28,15 +28,15 @@ public class RentalResult : Result<IRental>, IRental
     public double MonthlyAmount { get; set; }
 
     [JsonIgnore]
-    public IRealEstate RealEstate { get; set; } = new RealEstate();
+    public RealEstate RealEstate { get; set; } = new RealEstate();
     public long? RealEstateId { get; set; }
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Realtor();
+    public Realtor Realtor { get; set; } = new Realtor();
     public long? RealtorId { get; set; }
 
     [JsonIgnore]
-    public ITenant Tenant { get; set; } = new Tenant();
+    public Tenant Tenant { get; set; } = new Tenant();
     public long? TenantId { get; set; }
 
     public override Result<IRental> Instantiate(IRental entity)

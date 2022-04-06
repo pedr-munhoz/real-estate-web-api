@@ -10,7 +10,7 @@ public interface IRental : IEntityModel
     DateTime StartDate { get; set; }
     DateTime EndDate { get; set; }
     double MonthlyAmount { get; set; }
-    IRealEstate RealEstate { get; set; }
-    IRealtor Realtor { get; set; }
-    ITenant Tenant { get; set; }
+    RealEstate RealEstate { get; set; }
+    Realtor Realtor { get; set; }
+    Tenant Tenant { get; set; }
 }
