@@ -352,3 +352,6 @@ MigrationBackup/
 
 # VScode files
 .vscode
+
+# Appsettings
+appsettings.Development.json

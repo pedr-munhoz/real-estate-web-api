@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using real_estate_web_api.Infrastructure.Database;
 using real_estate_web_api.Models.Entities.Owners;
 using real_estate_web_api.Models.Entities.People;
 using real_estate_web_api.Models.Entities.RealEstates;
@@ -9,6 +11,12 @@ using real_estate_web_api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var connectionString = builder.Configuration["ServerDbSettings:ConnectionString"];
+
+builder.Services.AddDbContext<ServerDbContext>(options =>
+    options.UseNpgsql(connectionString)
+);
 
 builder.Services.AddControllers()
                 .AddNewtonsoftJson(options =>
