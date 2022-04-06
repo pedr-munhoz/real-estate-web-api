@@ -23,7 +23,7 @@ public class TenantResult : Result<ITenant>, ITenant
 
     public double Income { get; set; }
     public bool? InterestedInBuying { get; set; }
-    public IPerson Person { get; set; } = new Person();
+    public Person Person { get; set; } = new Person();
 
     public override Result<ITenant> Instantiate(ITenant entity)
         => new TenantResult(entity);
