@@ -3,13 +3,13 @@ using real_estate_web_api.Models.Entities.Realtors;
 
 namespace real_estate_web_api.Models.Results;
 
-public class RealtorResult : Result<IRealtor>, IRealtor
+public class RealtorResult : Result<Realtor>
 {
     public RealtorResult()
     {
     }
 
-    public RealtorResult(IRealtor entity) : base(entity)
+    public RealtorResult(Realtor entity) : base(entity)
     {
         Person.TaxDocument = entity.Person.TaxDocument;
         Person.Address = entity.Person.Address;
@@ -21,6 +21,6 @@ public class RealtorResult : Result<IRealtor>, IRealtor
 
     public Person Person { get; set; } = new Person();
 
-    public override Result<IRealtor> Instantiate(IRealtor entity)
+    public override Result<Realtor> Instantiate(Realtor entity)
         => new RealtorResult(entity);
 }
