@@ -19,7 +19,7 @@ public class RealtorResult : Result<IRealtor>, IRealtor
         Person.Mobile = entity.Person.Mobile;
     }
 
-    public IPerson Person { get; set; } = new Person();
+    public Person Person { get; set; } = new Person();
 
     public override Result<IRealtor> Instantiate(IRealtor entity)
         => new RealtorResult(entity);

@@ -4,5 +4,5 @@ namespace real_estate_web_api.Models.Entities.Realtors;
 
 public interface IRealtor : IEntityModel
 {
-    IPerson Person { get; set; }
+    Person Person { get; set; }
 }
