@@ -45,6 +45,7 @@ public class SqlRepository<T> : IRepository<T>
 
     public async Task<ServiceResult<T>> Find(Func<T, bool> expression)
     {
+        throw new NotImplementedException();
         var entities = await _dbContext.Set<T>()
             .Where(x => x.InactivatedAt == null)
             .ToListAsync();
@@ -89,6 +90,7 @@ public class SqlRepository<T> : IRepository<T>
 
     public async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
     {
+        throw new NotImplementedException();
         var entities = await _dbContext.Set<T>()
             .Where(x => x.InactivatedAt == null)
             .ToListAsync();
