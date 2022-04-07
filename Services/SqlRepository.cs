@@ -7,14 +7,14 @@ namespace real_estate_web_api.Services;
 public class SqlRepository<T> : IRepository<T>
     where T : class, IEntityModel
 {
-    private readonly ServerDbContext _dbContext;
+    protected readonly ServerDbContext _dbContext;
 
     public SqlRepository(ServerDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<ServiceResult<T>> Create(T entity)
+    public virtual async Task<ServiceResult<T>> Create(T entity)
     {
         await _dbContext.Set<T>().AddAsync(entity);
 
@@ -23,11 +23,11 @@ public class SqlRepository<T> : IRepository<T>
         return new ServiceResult<T>(entity);
     }
 
-    public async Task<ServiceResult> Delete(long id)
+    public virtual async Task<ServiceResult> Delete(long id)
     {
         var entity = await _dbContext.Set<T>()
-            .Where(x => x.InactivatedAt == null)
-            .Where(x => x.Id == id)
+            .WhereActive()
+            .WhereId(id)
             .FirstOrDefaultAsync();
 
         if (entity == null)
@@ -43,11 +43,10 @@ public class SqlRepository<T> : IRepository<T>
         return new ServiceResult(true);
     }
 
-    public async Task<ServiceResult<T>> Find(Func<T, bool> expression)
+    public virtual async Task<ServiceResult<T>> Find(Func<T, bool> expression)
     {
-        throw new NotImplementedException();
         var entities = await _dbContext.Set<T>()
-            .Where(x => x.InactivatedAt == null)
+            .WhereActive()
             .ToListAsync();
 
         var entity = entities
@@ -63,20 +62,20 @@ public class SqlRepository<T> : IRepository<T>
         return new ServiceResult<T>(entity);
     }
 
-    public async Task<ServiceResult<List<T>>> Retrieve()
+    public virtual async Task<ServiceResult<List<T>>> Retrieve()
     {
         var entities = await _dbContext.Set<T>()
-            .Where(x => x.InactivatedAt == null)
+            .WhereActive()
             .ToListAsync();
 
         return new ServiceResult<List<T>>(entities);
     }
 
-    public async Task<ServiceResult<T>> Retrieve(long id)
+    public virtual async Task<ServiceResult<T>> Retrieve(long id)
     {
         var entity = await _dbContext.Set<T>()
-            .Where(x => x.InactivatedAt == null)
-            .Where(x => x.Id == id)
+            .WhereActive()
+            .WhereId(id)
             .FirstOrDefaultAsync();
 
         if (entity == null)
@@ -88,11 +87,10 @@ public class SqlRepository<T> : IRepository<T>
         return new ServiceResult<T>(entity);
     }
 
-    public async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
+    public virtual async Task<ServiceResult<List<T>>> Search(Func<T, bool> filter, Func<T, bool>? secondaryFilter = null)
     {
-        throw new NotImplementedException();
         var entities = await _dbContext.Set<T>()
-            .Where(x => x.InactivatedAt == null)
+            .WhereActive()
             .ToListAsync();
 
         var searchResult = secondaryFilter == null
@@ -102,7 +100,7 @@ public class SqlRepository<T> : IRepository<T>
         return new ServiceResult<List<T>>(searchResult);
     }
 
-    public Task<ServiceResult<T>> Update(T entity)
+    public virtual Task<ServiceResult<T>> Update(T entity)
     {
         throw new NotImplementedException();
     }

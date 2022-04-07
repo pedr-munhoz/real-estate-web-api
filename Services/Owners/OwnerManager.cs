@@ -57,14 +57,6 @@ public class OwnerManager : IOwnerManager
 
     public async Task<ServiceResult<Owner>> Update(Owner entity)
     {
-        var taxDocumentAvailable = await CheckTaxDocument(entity.Person.TaxDocument);
-
-        if (!taxDocumentAvailable.Success)
-        {
-            ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<Owner>(taxDocumentAvailable.Error);
-        }
-
         var updateResult = await _repository.Update(entity);
         return ToEntityResult(updateResult);
     }
