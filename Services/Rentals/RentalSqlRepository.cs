@@ -11,9 +11,15 @@ public class RentalSqlRepository : EntitySqlRepository<Rental>
     }
 
     protected override IQueryable<Rental> LoadEntity(DbSet<Rental> dbSet)
-        => dbSet.AsQueryable();
+        => dbSet
+            .IncludeRealEstate()
+            .IncludeRealtor()
+            .IncludeTenant();
 
     protected override void UpdateFields(Rental dbEntity, Rental entity)
     {
+        dbEntity.EndDate = entity.EndDate;
+        dbEntity.MonthlyAmount = entity.MonthlyAmount;
+        dbEntity.Realtor = entity.Realtor;
     }
 }
