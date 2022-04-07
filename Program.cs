@@ -35,10 +35,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 
 builder.Services.AddTransient<IRepository<Owner>, OwnerSqlRepository>();
-builder.Services.AddTransient<IRepository<Realtor>, ListRepository<Realtor>>();
-builder.Services.AddTransient<IRepository<Tenant>, ListRepository<Tenant>>();
+builder.Services.AddTransient<IRepository<Realtor>, RealtorSqlRepository>();
+builder.Services.AddTransient<IRepository<Tenant>, TenantSqlRepository>();
 builder.Services.AddTransient<IRepository<RealEstate>, RealEstateSqlRepository>();
-builder.Services.AddTransient<IRepository<Rental>, ListRepository<Rental>>();
+builder.Services.AddTransient<IRepository<Rental>, RentalSqlRepository>();
 
 builder.Services.AddTransient<IOwnerManager, OwnerManager>();
 builder.Services.AddTransient<IRealtorManager, RealtorManager>();

@@ -26,7 +26,7 @@ public class RealEstateManager : StandardManager<RealEstate>, IRealEstateManager
 
     public override async Task<ServiceResult<RealEstate>> Update(RealEstate entity)
     {
-        var validOwnerResult = await CheckOwner(entity.Owner.Id);
+        var validOwnerResult = await CheckOwner(entity);
         if (!validOwnerResult.Success)
             return validOwnerResult;
 
@@ -35,46 +35,48 @@ public class RealEstateManager : StandardManager<RealEstate>, IRealEstateManager
 
     private async Task<ServiceResult<RealEstate>> CheckReferences(RealEstate entity)
     {
-        var validOwnerResult = await CheckOwner(entity.Owner.Id);
+        var validOwnerResult = await CheckOwner(entity);
         if (!validOwnerResult.Success)
             return validOwnerResult;
 
-        var validRealtorResult = await CheckRealtor(entity.Realtor.Id);
+        var validRealtorResult = await CheckRealtor(entity);
         if (!validRealtorResult.Success)
             return validRealtorResult;
 
         return new ServiceResult<RealEstate>(new RealEstate());
     }
 
-    private async Task<ServiceResult<RealEstate>> CheckOwner(long id)
+    private async Task<ServiceResult<RealEstate>> CheckOwner(RealEstate entity)
     {
-        var exists = await _ownerManager.Retrieve(id);
+        var exists = await _ownerManager.Retrieve(entity.Owner.Id);
 
         if (exists.Success && exists.Content != null)
         {
+            entity.Owner = exists.Content;
             return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
             "Owner not found",
-            $"No Owner could be located with id: {id}",
+            $"No Owner could be located with id: {entity.Owner.Id}",
             404);
 
         return new ServiceResult<RealEstate>(error);
     }
 
-    private async Task<ServiceResult<RealEstate>> CheckRealtor(long id)
+    private async Task<ServiceResult<RealEstate>> CheckRealtor(RealEstate entity)
     {
-        var exists = await _realtorManager.Retrieve(id);
+        var exists = await _realtorManager.Retrieve(entity.Realtor.Id);
 
         if (exists.Success && exists.Content != null)
         {
+            entity.Realtor = exists.Content;
             return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
             "Realtor not found",
-            $"No Realtor could be located with id: {id}",
+            $"No Realtor could be located with id: {entity.Realtor.Id}",
             404);
 
         return new ServiceResult<RealEstate>(error);
