@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var connectionString = builder.Configuration["ServerDbSettings:ConnectionString"];
+var connectionString = builder.Configuration["ServerDbConnectionString"];
 
 builder.Services.AddDbContext<ServerDbContext>(options =>
     options.UseNpgsql(connectionString)
@@ -47,6 +47,8 @@ builder.Services.AddTransient<IRealEstateManager, RealEstateManager>();
 builder.Services.AddTransient<IRentalManager, RentalManager>();
 
 var app = builder.Build();
+
+DatabaseManagementService.MigrationInitialisation(app);
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
