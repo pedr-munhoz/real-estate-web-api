@@ -7,13 +7,13 @@ using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.Results
 {
-    public class RealEstateResult : Result<IRealEstate>, IRealEstate
+    public class RealEstateResult : Result<RealEstate>
     {
         public RealEstateResult()
         {
         }
 
-        public RealEstateResult(IRealEstate entity) : base(entity)
+        public RealEstateResult(RealEstate entity) : base(entity)
         {
             Address = entity.Address;
             Type = entity.Type;
@@ -39,14 +39,14 @@ namespace real_estate_web_api.Models.Results
         public double? RentAmount { get; set; }
 
         [JsonIgnore]
-        public IOwner Owner { get; set; } = new Owner();
-        public string? OwnerId { get; set; }
+        public Owner Owner { get; set; } = new Owner();
+        public long? OwnerId { get; set; }
 
         [JsonIgnore]
-        public IRealtor Realtor { get; set; } = new Realtor();
-        public string? RealtorId { get; set; }
+        public Realtor Realtor { get; set; } = new Realtor();
+        public long? RealtorId { get; set; }
 
-        public override Result<IRealEstate> Instantiate(IRealEstate entity)
+        public override Result<RealEstate> Instantiate(RealEstate entity)
             => new RealEstateResult(entity);
     }
 }

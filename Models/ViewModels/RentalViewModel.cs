@@ -8,25 +8,25 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RentalViewModel : ViewModel<IRental>, IRental
+public class RentalViewModel : ViewModel<Rental>
 {
     [Required]
-    public string RealEstateId { get; set; } = "";
+    public long RealEstateId { get; set; }
 
     [JsonIgnore]
-    public IRealEstate RealEstate { get; set; } = new RealEstate();
+    public RealEstate RealEstate { get; set; } = new RealEstate();
 
     [Required]
-    public string RealtorId { get; set; } = "";
+    public long RealtorId { get; set; }
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Realtor();
+    public Realtor Realtor { get; set; } = new Realtor();
 
     [Required]
-    public string TenantId { get; set; } = "";
+    public long TenantId { get; set; }
 
     [JsonIgnore]
-    public ITenant Tenant { get; set; } = new Tenant();
+    public Tenant Tenant { get; set; } = new Tenant();
 
     [Required]
     public DateTime StartDate { get; set; }

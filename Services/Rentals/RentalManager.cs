@@ -6,14 +6,14 @@ using real_estate_web_api.Services.Tenants;
 
 namespace real_estate_web_api.Services.Rentals;
 
-public class RentalManager : StandardManager<IRental>, IRentalManager
+public class RentalManager : StandardManager<Rental>, IRentalManager
 {
     private readonly IRealEstateManager _realEstateManager;
     private readonly IRealtorManager _realtorManager;
     private readonly ITenantManager _tenantManager;
 
     public RentalManager(
-        IRepository<IRental> repository,
+        IRepository<Rental> repository,
         IRealEstateManager realEstateManager,
         IRealtorManager realtorManager,
         ITenantManager tentantManager)
@@ -24,7 +24,7 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         _tenantManager = tentantManager;
     }
 
-    public override async Task<ServiceResult<IRental>> Create(IRental entity)
+    public override async Task<ServiceResult<Rental>> Create(Rental entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -33,7 +33,7 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         return await base.Create(entity);
     }
 
-    public override async Task<ServiceResult<IRental>> Update(IRental entity)
+    public override async Task<ServiceResult<Rental>> Update(Rental entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -42,71 +42,74 @@ public class RentalManager : StandardManager<IRental>, IRentalManager
         return await base.Update(entity);
     }
 
-    private async Task<ServiceResult<IRental>> CheckReferences(IRental entity)
+    private async Task<ServiceResult<Rental>> CheckReferences(Rental entity)
     {
-        var validRealEstateResult = await CheckRealEstate(entity.RealEstate.Id);
+        var validRealEstateResult = await CheckRealEstate(entity);
         if (!validRealEstateResult.Success)
             return validRealEstateResult;
 
-        var validRealtorResult = await CheckRealtor(entity.Realtor.Id);
+        var validRealtorResult = await CheckRealtor(entity);
         if (!validRealtorResult.Success)
             return validRealtorResult;
 
-        var validTenantResult = await CheckTenant(entity.Tenant.Id);
+        var validTenantResult = await CheckTenant(entity);
         if (!validTenantResult.Success)
             return validTenantResult;
 
-        return new ServiceResult<IRental>(new Rental());
+        return new ServiceResult<Rental>(new Rental());
     }
 
-    private async Task<ServiceResult<IRental>> CheckRealEstate(string id)
+    private async Task<ServiceResult<Rental>> CheckRealEstate(Rental entity)
     {
-        var exists = await _realEstateManager.Retrieve(id);
+        var exists = await _realEstateManager.Retrieve(entity.RealEstate.Id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            entity.RealEstate = exists.Content;
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
             "RealEstate not found",
-            $"No RealEstate could be located with id: {id}",
+            $"No RealEstate could be located with id: {entity.RealEstate.Id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 
-    private async Task<ServiceResult<IRental>> CheckRealtor(string id)
+    private async Task<ServiceResult<Rental>> CheckRealtor(Rental entity)
     {
-        var exists = await _realtorManager.Retrieve(id);
+        var exists = await _realtorManager.Retrieve(entity.Realtor.Id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            entity.Realtor = exists.Content;
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
             "Realtor not found",
-            $"No Realtor could be located with id: {id}",
+            $"No Realtor could be located with id: {entity.Realtor.Id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 
-    private async Task<ServiceResult<IRental>> CheckTenant(string id)
+    private async Task<ServiceResult<Rental>> CheckTenant(Rental entity)
     {
-        var exists = await _tenantManager.Retrieve(id);
+        var exists = await _tenantManager.Retrieve(entity.Tenant.Id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRental>(new Rental());
+            entity.Tenant = exists.Content;
+            return new ServiceResult<Rental>(new Rental());
         }
 
         var error = new ServiceError(
             "Tenant not found",
-            $"No tenant could be located with id: {id}",
+            $"No tenant could be located with id: {entity.Tenant.Id}",
             404);
 
-        return new ServiceResult<IRental>(error);
+        return new ServiceResult<Rental>(error);
     }
 }

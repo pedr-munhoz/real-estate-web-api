@@ -6,7 +6,7 @@ namespace real_estate_web_api.Models.ViewModels;
 public abstract class ViewModel<T> : IEntityModel
     where T : IEntityModel
 {
-    public string Id { get; set; } = "";
+    public long Id { get; set; }
 
     [JsonIgnore]
     public DateTime CreatedAt { get; set; }

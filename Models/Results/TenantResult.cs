@@ -3,13 +3,13 @@ using real_estate_web_api.Models.Entities.Tenants;
 
 namespace real_estate_web_api.Models.Results;
 
-public class TenantResult : Result<ITenant>, ITenant
+public class TenantResult : Result<Tenant>
 {
     public TenantResult()
     {
     }
 
-    public TenantResult(ITenant entity) : base(entity)
+    public TenantResult(Tenant entity) : base(entity)
     {
         Person.TaxDocument = entity.Person.TaxDocument;
         Person.Address = entity.Person.Address;
@@ -23,8 +23,8 @@ public class TenantResult : Result<ITenant>, ITenant
 
     public double Income { get; set; }
     public bool? InterestedInBuying { get; set; }
-    public IPerson Person { get; set; } = new Person();
+    public Person Person { get; set; } = new Person();
 
-    public override Result<ITenant> Instantiate(ITenant entity)
+    public override Result<Tenant> Instantiate(Tenant entity)
         => new TenantResult(entity);
 }

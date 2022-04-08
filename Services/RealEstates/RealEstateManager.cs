@@ -4,18 +4,18 @@ using real_estate_web_api.Services.Realtors;
 
 namespace real_estate_web_api.Services.RealEstates;
 
-public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManager
+public class RealEstateManager : StandardManager<RealEstate>, IRealEstateManager
 {
     private readonly IOwnerManager _ownerManager;
     private readonly IRealtorManager _realtorManager;
-    public RealEstateManager(IRepository<IRealEstate> repository, IOwnerManager ownerManager, IRealtorManager realtorManager)
+    public RealEstateManager(IRepository<RealEstate> repository, IOwnerManager ownerManager, IRealtorManager realtorManager)
         : base(repository)
     {
         _ownerManager = ownerManager;
         _realtorManager = realtorManager;
     }
 
-    public override async Task<ServiceResult<IRealEstate>> Create(IRealEstate entity)
+    public override async Task<ServiceResult<RealEstate>> Create(RealEstate entity)
     {
         var validReferencesResult = await CheckReferences(entity);
         if (!validReferencesResult.Success)
@@ -24,59 +24,61 @@ public class RealEstateManager : StandardManager<IRealEstate>, IRealEstateManage
         return await base.Create(entity);
     }
 
-    public override async Task<ServiceResult<IRealEstate>> Update(IRealEstate entity)
+    public override async Task<ServiceResult<RealEstate>> Update(RealEstate entity)
     {
-        var validOwnerResult = await CheckOwner(entity.Owner.Id);
+        var validOwnerResult = await CheckOwner(entity);
         if (!validOwnerResult.Success)
             return validOwnerResult;
 
         return await base.Update(entity);
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckReferences(IRealEstate entity)
+    private async Task<ServiceResult<RealEstate>> CheckReferences(RealEstate entity)
     {
-        var validOwnerResult = await CheckOwner(entity.Owner.Id);
+        var validOwnerResult = await CheckOwner(entity);
         if (!validOwnerResult.Success)
             return validOwnerResult;
 
-        var validRealtorResult = await CheckRealtor(entity.Realtor.Id);
+        var validRealtorResult = await CheckRealtor(entity);
         if (!validRealtorResult.Success)
             return validRealtorResult;
 
-        return new ServiceResult<IRealEstate>(new RealEstate());
+        return new ServiceResult<RealEstate>(new RealEstate());
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckOwner(string id)
+    private async Task<ServiceResult<RealEstate>> CheckOwner(RealEstate entity)
     {
-        var exists = await _ownerManager.Retrieve(id);
+        var exists = await _ownerManager.Retrieve(entity.Owner.Id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRealEstate>(new RealEstate());
+            entity.Owner = exists.Content;
+            return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
             "Owner not found",
-            $"No Owner could be located with id: {id}",
+            $"No Owner could be located with id: {entity.Owner.Id}",
             404);
 
-        return new ServiceResult<IRealEstate>(error);
+        return new ServiceResult<RealEstate>(error);
     }
 
-    private async Task<ServiceResult<IRealEstate>> CheckRealtor(string id)
+    private async Task<ServiceResult<RealEstate>> CheckRealtor(RealEstate entity)
     {
-        var exists = await _realtorManager.Retrieve(id);
+        var exists = await _realtorManager.Retrieve(entity.Realtor.Id);
 
         if (exists.Success && exists.Content != null)
         {
-            return new ServiceResult<IRealEstate>(new RealEstate());
+            entity.Realtor = exists.Content;
+            return new ServiceResult<RealEstate>(new RealEstate());
         }
 
         var error = new ServiceError(
             "Realtor not found",
-            $"No Realtor could be located with id: {id}",
+            $"No Realtor could be located with id: {entity.Realtor.Id}",
             404);
 
-        return new ServiceResult<IRealEstate>(error);
+        return new ServiceResult<RealEstate>(error);
     }
 }

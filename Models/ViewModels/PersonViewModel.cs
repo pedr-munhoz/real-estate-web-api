@@ -3,7 +3,7 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.ViewModels
 {
-    public class PersonViewModel : ViewModel<IPerson>, IPerson
+    public class PersonViewModel : ViewModel<Person>
     {
         [Required]
         public string TaxDocument { get; set; } = "";
@@ -23,7 +23,7 @@ namespace real_estate_web_api.Models.ViewModels
         [Required]
         public string Mobile { get; set; } = "";
 
-        public override IPerson Map()
+        public override Person Map()
         {
             return new Person
             {

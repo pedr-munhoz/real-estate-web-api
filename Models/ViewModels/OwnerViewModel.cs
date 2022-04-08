@@ -5,12 +5,12 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class OwnerViewModel : ViewModel<IOwner>
+public class OwnerViewModel : ViewModel<Owner>
 {
     [Required]
     public PersonViewModel Person { get; set; } = new PersonViewModel();
 
-    public override IOwner Map()
+    public override Owner Map()
     {
         return new Owner
         {

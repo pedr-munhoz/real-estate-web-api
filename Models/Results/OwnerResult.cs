@@ -3,13 +3,13 @@ using real_estate_web_api.Models.Entities.People;
 
 namespace real_estate_web_api.Models.Results;
 
-public class OwnerResult : Result<IOwner>, IOwner
+public class OwnerResult : Result<Owner>
 {
     public OwnerResult()
     {
     }
 
-    public OwnerResult(IOwner entity) : base(entity)
+    public OwnerResult(Owner entity) : base(entity)
     {
         Person.TaxDocument = entity.Person.TaxDocument;
         Person.Address = entity.Person.Address;
@@ -19,8 +19,8 @@ public class OwnerResult : Result<IOwner>, IOwner
         Person.Mobile = entity.Person.Mobile;
     }
 
-    public IPerson Person { get; set; } = new Person();
+    public Person Person { get; set; } = new Person();
 
-    public override Result<IOwner> Instantiate(IOwner entity)
+    public override Result<Owner> Instantiate(Owner entity)
         => new OwnerResult(entity);
 }

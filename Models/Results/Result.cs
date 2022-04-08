@@ -16,7 +16,7 @@ public abstract class Result<T> : IEntityModel
         CreatedAt = entity.CreatedAt;
     }
 
-    public string Id { get; set; } = "";
+    public long Id { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

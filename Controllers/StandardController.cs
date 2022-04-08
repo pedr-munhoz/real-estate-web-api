@@ -51,7 +51,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpGet]
     [Route("{id}")]
-    public async Task<ActionResult> RetrieveById([FromRoute] string id)
+    public async Task<ActionResult> RetrieveById([FromRoute] long id)
     {
         var result = await _manager.Retrieve(id);
 
@@ -82,7 +82,7 @@ public abstract class StandardController<TEntity, TModel, TResult> : ControllerB
     [ProducesResponseType(typeof(ServiceError), StatusCodes.Status404NotFound)]
     [HttpDelete]
     [Route("{id}")]
-    public async Task<ActionResult> Delete([FromRoute] string id)
+    public async Task<ActionResult> Delete([FromRoute] long id)
     {
         var result = await _manager.Delete(id);
 

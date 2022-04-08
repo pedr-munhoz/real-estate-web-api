@@ -8,7 +8,7 @@ using real_estate_web_api.Models.Enumerations;
 
 namespace real_estate_web_api.Models.ViewModels;
 
-public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
+public class RealEstateViewModel : ViewModel<RealEstate>
 {
     [Required]
     public string Address { get; set; } = "";
@@ -39,16 +39,16 @@ public class RealEstateViewModel : ViewModel<IRealEstate>, IRealEstate
     public bool RentAvailable { get; set; }
 
     [Required]
-    public string OwnerId { get; set; } = "";
+    public long OwnerId { get; set; }
 
     [JsonIgnore]
-    public IOwner Owner { get; set; } = new Owner();
+    public Owner Owner { get; set; } = new Owner();
 
     [Required]
-    public string RealtorId { get; set; } = "";
+    public long RealtorId { get; set; }
 
     [JsonIgnore]
-    public IRealtor Realtor { get; set; } = new Realtor();
+    public Realtor Realtor { get; set; } = new Realtor();
 
     public override RealEstate Map()
     {

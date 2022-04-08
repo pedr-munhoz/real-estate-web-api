@@ -5,21 +5,21 @@ namespace real_estate_web_api.Services.Tenants;
 
 public class TenantManager : ITenantManager
 {
-    private readonly IRepository<ITenant> _repository;
+    private readonly IRepository<Tenant> _repository;
 
-    public TenantManager(IRepository<ITenant> repository)
+    public TenantManager(IRepository<Tenant> repository)
     {
         _repository = repository;
     }
 
-    public async Task<ServiceResult<ITenant>> Create(ITenant entity)
+    public async Task<ServiceResult<Tenant>> Create(Tenant entity)
     {
         var taxDocumentAvailableResult = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailableResult.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailableResult.Error);
-            return new ServiceResult<ITenant>(taxDocumentAvailableResult.Error);
+            return new ServiceResult<Tenant>(taxDocumentAvailableResult.Error);
         }
 
         var result = await _repository.Create(entity);
@@ -27,35 +27,35 @@ public class TenantManager : ITenantManager
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult> Delete(string id)
+    public async Task<ServiceResult> Delete(long id)
     {
         var result = await _repository.Delete(id);
 
         return result;
     }
 
-    public async Task<ServiceResult<List<ITenant>>> Retrieve()
+    public async Task<ServiceResult<List<Tenant>>> Retrieve()
     {
         var result = await _repository.Retrieve();
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<ITenant>> Retrieve(string id)
+    public async Task<ServiceResult<Tenant>> Retrieve(long id)
     {
         var result = await _repository.Find(x => x.Id == id);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<List<ITenant>>> Search(Func<ITenant, bool> filter)
+    public async Task<ServiceResult<List<Tenant>>> Search(Func<Tenant, bool> filter)
     {
         var result = await _repository.Search(filter);
 
         return ToEntityResult(result);
     }
 
-    public async Task<ServiceResult<ITenant>> Update(ITenant entity)
+    public async Task<ServiceResult<Tenant>> Update(Tenant entity)
     {
         var existingPersonResult = await _repository.Find(x => x.Person.TaxDocument == entity.Person.TaxDocument);
 
@@ -63,14 +63,14 @@ public class TenantManager : ITenantManager
             return ToEntityResult(existingPersonResult);
 
         if (existingPersonResult.Content == null)
-            return ToEntityResult(new ServiceResult<ITenant>(new ServiceError("Error", "Internal server Error", 500)));
+            return ToEntityResult(new ServiceResult<Tenant>(new ServiceError("Error", "Internal server Error", 500)));
 
         var taxDocumentAvailable = await CheckTaxDocument(entity.Person.TaxDocument);
 
         if (!taxDocumentAvailable.Success)
         {
             ArgumentNullException.ThrowIfNull(taxDocumentAvailable.Error);
-            return new ServiceResult<ITenant>(taxDocumentAvailable.Error);
+            return new ServiceResult<Tenant>(taxDocumentAvailable.Error);
         }
 
         var updateResult = await _repository.Update(entity);
@@ -104,27 +104,27 @@ public class TenantManager : ITenantManager
         return new ServiceResult(success: true);
     }
 
-    private ServiceResult<ITenant> ToEntityResult(ServiceResult<ITenant> result)
+    private ServiceResult<Tenant> ToEntityResult(ServiceResult<Tenant> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<ITenant>(result.Content);
+            return new ServiceResult<Tenant>(result.Content);
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<ITenant>(result.Error);
+        return new ServiceResult<Tenant>(result.Error);
     }
 
-    private ServiceResult<List<ITenant>> ToEntityResult(ServiceResult<List<ITenant>> result)
+    private ServiceResult<List<Tenant>> ToEntityResult(ServiceResult<List<Tenant>> result)
     {
         if (result.Success)
         {
             ArgumentNullException.ThrowIfNull(result.Content);
-            return new ServiceResult<List<ITenant>>(new List<ITenant>(result.Content));
+            return new ServiceResult<List<Tenant>>(new List<Tenant>(result.Content));
         }
 
         ArgumentNullException.ThrowIfNull(result.Error);
-        return new ServiceResult<List<ITenant>>(result.Error);
+        return new ServiceResult<List<Tenant>>(result.Error);
     }
 }
