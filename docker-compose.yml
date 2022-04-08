@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgresserver:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "123456"
+    ports:
+      - "5432:5432"
+
+  real-estate-web-api:
+    build: .
+    environment:
+      ServerDbSettings.ConnectionString: "Host=localhost;Port=5432;Database=real_estate_db;Username=postgres;Password=123456;Pooling=false;"
+    ports:
+      - "8090:80"
